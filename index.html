@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#111111">
+<title>Colorea Mi Tarea</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Pantalla de inicio -->
+<section id="screen-home" class="screen">
+  <h1>🎨 Colorea Mi Tarea</h1>
+  <p class="lead">Toma una foto de la hoja o elige una imagen. La convertimos en un dibujo con líneas gruesas para colorear.</p>
+  <div class="big-actions">
+    <label class="bigbtn primary">
+      📷 Tomar foto
+      <input type="file" accept="image/*" capture="environment" id="file-camera" hidden>
+    </label>
+    <label class="bigbtn">
+      🖼️ Elegir imagen
+      <input type="file" accept="image/*" id="file-gallery" hidden>
+    </label>
+    <button class="bigbtn" id="btn-demo">✏️ Probar con ejemplo</button>
+  </div>
+  <div class="samples">
+    <span>Hojas de ejemplo:</span>
+    <a class="btn" href="?img=samples/leccion10.jpg">Lección 10</a>
+    <a class="btn" href="?img=samples/leccion11.jpg">Lección 11</a>
+    <a class="btn" href="?img=samples/leccion12.jpg">Lección 12</a>
+  </div>
+  <h2 class="section-title">📚 Mis cuadernos</h2>
+  <div id="notebook-list" class="notebook-list"></div>
+</section>
+
+<!-- Pantalla de cuaderno -->
+<section id="screen-notebook" class="screen hidden">
+  <header class="bar">
+    <button class="btn" id="nb-back">← Inicio</button>
+    <span class="title" id="nb-title">Cuaderno</span>
+    <div class="row">
+      <button class="btn" id="nb-rename" title="Cambiar nombre">✏️</button>
+      <button class="btn" id="nb-delete" title="Borrar cuaderno">🗑</button>
+    </div>
+  </header>
+  <div class="nb-body">
+    <div class="big-actions row-actions">
+      <label class="bigbtn primary">📷 Agregar hoja con la cámara
+        <input type="file" accept="image/*" capture="environment" id="nb-file-camera" hidden></label>
+      <label class="bigbtn">🖼️ Agregar desde imágenes
+        <input type="file" accept="image/*" id="nb-file-gallery" hidden></label>
+    </div>
+    <div id="saved-list" class="saved-list"></div>
+  </div>
+</section>
+
+<!-- Elegir cuaderno al guardar -->
+<div id="picker" class="overlay hidden">
+  <div class="sheet">
+    <h2>¿En qué cuaderno lo guardamos?</h2>
+    <div id="picker-list" class="picker-list"></div>
+    <div class="row">
+      <button class="btn primary" id="picker-new">➕ Nuevo cuaderno</button>
+      <button class="btn" id="picker-cancel">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pantalla de ajuste -->
+<section id="screen-adjust" class="screen hidden">
+  <header class="bar">
+    <button class="btn" id="adjust-back">← Volver</button>
+    <span class="title">Ajustar imagen</span>
+    <button class="btn primary" id="adjust-ok">Colorear →</button>
+  </header>
+  <div class="adjust-body">
+    <div class="preview-wrap"><canvas id="preview"></canvas></div>
+    <div class="controls">
+      <label>Grosor de líneas <output id="out-thick">0</output>
+        <input type="range" id="ctl-thick" min="0" max="6" step="1" value="0"></label>
+      <label>Sensibilidad <output id="out-sens">12</output>
+        <input type="range" id="ctl-sens" min="2" max="40" step="1" value="12"></label>
+      <label>Limpiar puntos <output id="out-clean">2</output>
+        <input type="range" id="ctl-clean" min="0" max="4" step="1" value="2"></label>
+      <label>Girar
+        <span class="row">
+          <button class="btn" id="rot-l">⟲ 90°</button>
+          <button class="btn" id="rot-r">⟳ 90°</button>
+        </span></label>
+      <label>Enderezar <output id="out-fine">0°</output>
+        <input type="range" id="ctl-fine" min="-10" max="10" step="0.5" value="0">
+        <button class="btn small" id="fine-reset">Centrar 0°</button></label>
+      <label class="check"><input type="checkbox" id="ctl-invert"> Fondo oscuro, líneas claras</label>
+    </div>
+  </div>
+</section>
+
+<!-- Pantalla de colorear -->
+<section id="screen-paint" class="screen hidden">
+  <header class="bar">
+    <button class="btn" id="paint-back">← Ajustar</button>
+    <span class="title" id="paint-title">Colorear</span>
+    <div class="row">
+      <button class="btn" id="btn-undo" title="Deshacer">↶</button>
+      <button class="btn" id="btn-save">💾</button>
+      <button class="btn" id="btn-export">⬇️</button>
+    </div>
+  </header>
+
+  <div id="viewport">
+    <div id="stage">
+      <canvas id="c-color"></canvas>
+      <canvas id="c-lines"></canvas>
+    </div>
+    <div class="zoom-ctl">
+      <button class="btn round" id="zoom-in">＋</button>
+      <button class="btn round" id="zoom-out">－</button>
+      <button class="btn round" id="zoom-fit">⤢</button>
+    </div>
+  </div>
+
+  <footer class="toolbar">
+    <div class="tools">
+      <button class="tool active" data-tool="fill" title="Cubo">🪣</button>
+      <button class="tool" data-tool="brush" title="Pincel">🖌️</button>
+      <button class="tool" data-tool="eraser" title="Borrador">🧽</button>
+      <button class="tool" data-tool="pan" title="Mover">✋</button>
+    </div>
+    <div class="size-ctl">
+      <span>Tamaño</span>
+      <input type="range" id="ctl-size" min="4" max="80" value="24">
+    </div>
+    <div class="palette" id="palette"></div>
+  </footer>
+</section>
+
+<div id="toast" class="toast hidden"></div>
+<script src="app.js"></script>
+</body>
+</html>
