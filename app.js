@@ -5,6 +5,161 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const MAX_SIDE = 2400, MIN_SIDE = 2000;
 
+const I18N = {
+  es: {
+    appTitle: 'Colorea Mi Tarea',
+    lead: 'Toma una foto de la hoja o elige una imagen. La convertimos en un dibujo con líneas gruesas para colorear.',
+    takePhoto: 'Tomar foto',
+    chooseImage: 'Elegir imagen',
+    tryDemo: 'Probar con ejemplo',
+    sampleSheets: 'Hojas de ejemplo:',
+    lesson10: 'Lección 10',
+    lesson11: 'Lección 11',
+    lesson12: 'Lección 12',
+    myNotebooks: 'Mis cuadernos',
+    backHome: '← Inicio',
+    rename: 'Cambiar nombre',
+    deleteNotebook: 'Borrar cuaderno',
+    addWithCamera: 'Agregar hoja con la cámara',
+    addFromImages: 'Agregar desde imágenes',
+    pickNotebookTitle: '¿En qué cuaderno lo guardamos?',
+    newNotebook: 'Nuevo cuaderno',
+    cancel: 'Cancelar',
+    back: '← Volver',
+    adjustImage: 'Ajustar imagen',
+    colorIt: 'Colorear →',
+    lineThickness: 'Grosor de líneas',
+    sensitivity: 'Sensibilidad',
+    cleanDots: 'Limpiar puntos',
+    rotate: 'Girar',
+    straighten: 'Enderezar',
+    centerZero: 'Centrar 0°',
+    darkBg: 'Fondo oscuro, líneas claras',
+    backAdjust: '← Ajustar',
+    paint: 'Colorear',
+    undo: 'Deshacer',
+    bucket: 'Cubo',
+    brush: 'Pincel',
+    eraser: 'Borrador',
+    pan: 'Mover',
+    size: 'Tamaño',
+    langLabel: 'Idioma',
+    processing: 'Procesando…',
+    nothingToUndo: 'Nada que deshacer',
+    notebookNamePrompt: 'Nombre del cuaderno (por ejemplo: Matemáticas)',
+    defaultNotebook: 'Mis tareas',
+    sheet: 'Hoja',
+    saved: 'Guardado ✔',
+    myDrawing: 'Mi dibujo',
+    drawingFile: 'dibujo.png',
+    sheetCount: n => n === 1 ? '1 hoja' : n + ' hojas',
+    emptyNotebook: 'Este cuaderno está vacío. Agrega una hoja con la cámara.',
+    savedDrawing: 'dibujo guardado',
+    open: 'Abrir',
+    sheetNamePrompt: 'Nombre de la hoja',
+    deleteSheetConfirm: '¿Borrar esta hoja?',
+    renameNotebookPrompt: 'Nuevo nombre del cuaderno',
+    deleteNotebookConfirm: (name, n) => `¿Borrar el cuaderno "${name}" y sus ${n} hojas?`,
+    couldNotOpen: 'No se pudo abrir la imagen',
+    couldNotLoad: 'No se pudo cargar',
+    backNotebook: '← Cuaderno',
+    demoText: 'Cuenta cuántos hay. Colorea 1 de cada grupo.',
+    deleteLabel: 'borrar',
+  },
+  en: {
+    appTitle: 'Color My Homework',
+    lead: 'Take a photo of the worksheet or pick an image. We turn it into a drawing with thick lines you can color.',
+    takePhoto: 'Take photo',
+    chooseImage: 'Choose image',
+    tryDemo: 'Try a sample',
+    sampleSheets: 'Sample sheets:',
+    lesson10: 'Lesson 10',
+    lesson11: 'Lesson 11',
+    lesson12: 'Lesson 12',
+    myNotebooks: 'My notebooks',
+    backHome: '← Home',
+    rename: 'Rename',
+    deleteNotebook: 'Delete notebook',
+    addWithCamera: 'Add page with camera',
+    addFromImages: 'Add from photos',
+    pickNotebookTitle: 'Which notebook should we save it in?',
+    newNotebook: 'New notebook',
+    cancel: 'Cancel',
+    back: '← Back',
+    adjustImage: 'Adjust image',
+    colorIt: 'Color →',
+    lineThickness: 'Line thickness',
+    sensitivity: 'Sensitivity',
+    cleanDots: 'Clean specks',
+    rotate: 'Rotate',
+    straighten: 'Straighten',
+    centerZero: 'Center 0°',
+    darkBg: 'Dark background, light lines',
+    backAdjust: '← Adjust',
+    paint: 'Color',
+    undo: 'Undo',
+    bucket: 'Fill',
+    brush: 'Brush',
+    eraser: 'Eraser',
+    pan: 'Move',
+    size: 'Size',
+    langLabel: 'Language',
+    processing: 'Processing…',
+    nothingToUndo: 'Nothing to undo',
+    notebookNamePrompt: 'Notebook name (for example: Math)',
+    defaultNotebook: 'My homework',
+    sheet: 'Page',
+    saved: 'Saved ✔',
+    myDrawing: 'My drawing',
+    drawingFile: 'drawing.png',
+    sheetCount: n => n === 1 ? '1 page' : n + ' pages',
+    emptyNotebook: 'This notebook is empty. Add a page with the camera.',
+    savedDrawing: 'saved drawing',
+    open: 'Open',
+    sheetNamePrompt: 'Page name',
+    deleteSheetConfirm: 'Delete this page?',
+    renameNotebookPrompt: 'New notebook name',
+    deleteNotebookConfirm: (name, n) => `Delete the notebook "${name}" and its ${n} pages?`,
+    couldNotOpen: 'Could not open the image',
+    couldNotLoad: 'Could not load',
+    backNotebook: '← Notebook',
+    demoText: 'Count how many. Color 1 in each group.',
+    deleteLabel: 'delete',
+  },
+};
+let lang = localStorage.getItem('lang');
+if (lang !== 'es' && lang !== 'en') lang = (navigator.language || '').toLowerCase().startsWith('en') ? 'en' : 'es';
+function t(key, ...args) {
+  const v = (I18N[lang] && I18N[lang][key]) ?? I18N.es[key] ?? key;
+  return typeof v === 'function' ? v(...args) : v;
+}
+function paintBackLabel() {
+  if (state.gray) return t('backAdjust');
+  if (state.notebookId) return t('backNotebook');
+  return t('backHome');
+}
+function applyI18n() {
+  document.documentElement.lang = lang;
+  document.title = t('appTitle');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+  $$('.lang-btn').forEach(b => {
+    const on = b.dataset.lang === lang;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on);
+  });
+  $('#paint-back').textContent = paintBackLabel();
+}
+async function setLang(next) {
+  if (next !== 'es' && next !== 'en') return;
+  lang = next;
+  localStorage.setItem('lang', lang);
+  applyI18n();
+  await renderHome();
+  if (!$('#screen-notebook').classList.contains('hidden') && currentNb) await openNotebook(currentNb.id);
+}
+
 // ---------- estado ----------
 const state = {
   src: null,          // HTMLCanvasElement con la foto (ya girada)
@@ -190,7 +345,7 @@ async function openImage(img) {
   prepareSource();
   state.projectId = null; state.notebookId = null; state.projectName = null;
   show('#screen-adjust');
-  toast('Procesando…', 1000);
+  toast(t('processing'), 1000);
   await new Promise(r => setTimeout(r, 30));
   renderPreview();
 }
@@ -224,7 +379,7 @@ function startPainting(fresh) {
     state.undo = [];
   }
   stage.style.width = w + 'px'; stage.style.height = h + 'px';
-  $('#paint-back').textContent = '← Ajustar';
+  $('#paint-back').textContent = t('backAdjust');
   show('#screen-paint');
   fitView();
 }
@@ -268,7 +423,7 @@ function pushUndo() {
   state.undo.push(ctxC.getImageData(0, 0, state.w, state.h));
   if (state.undo.length > 12) state.undo.shift();
 }
-function undo() { const s = state.undo.pop(); if (s) ctxC.putImageData(s, 0, 0); else toast('Nada que deshacer'); }
+function undo() { const s = state.undo.pop(); if (s) ctxC.putImageData(s, 0, 0); else toast(t('nothingToUndo')); }
 $('#btn-undo').onclick = undo;
 
 // relleno (cubo) limitado por la máscara de líneas
@@ -387,13 +542,13 @@ const NB_ICONS = ['📘', '📗', '📕', '📙', '📓', '📔'];
 async function ensureDefaultNotebook() {
   const nbs = await dbAll('notebooks');
   if (nbs.length) return nbs;
-  const nb = { id: Date.now(), name: 'Mis tareas', icon: '📘', created: Date.now() };
+  const nb = { id: Date.now(), name: t('defaultNotebook'), icon: '📘', created: Date.now() };
   await dbPut('notebooks', nb);
   for (const p of await dbAll('projects')) if (!p.notebookId) { p.notebookId = nb.id; await dbPut('projects', p); }
   return [nb];
 }
 async function createNotebook() {
-  const name = (prompt('Nombre del cuaderno (por ejemplo: Matemáticas)') || '').trim();
+  const name = (prompt(t('notebookNamePrompt')) || '').trim();
   if (!name) return null;
   const nbs = await dbAll('notebooks');
   const nb = { id: Date.now(), name, icon: NB_ICONS[nbs.length % NB_ICONS.length], created: Date.now() };
@@ -427,20 +582,20 @@ $('#btn-save').onclick = async () => {
   if (!state.projectId) {
     state.projectId = Date.now();
     const n = (await dbAll('projects')).filter(p => p.notebookId === state.notebookId).length + 1;
-    state.projectName = 'Hoja ' + n;
+    state.projectName = t('sheet') + ' ' + n;
   }
-  await dbPut('projects', { id: state.projectId, notebookId: state.notebookId, name: state.projectName || 'Hoja', date: Date.now(),
+  await dbPut('projects', { id: state.projectId, notebookId: state.notebookId, name: state.projectName || t('sheet'), date: Date.now(),
     w: state.w, h: state.h, invert: state.invert,
     lines: cLines.toDataURL('image/png'), color: cColor.toDataURL('image/png'), thumb: thumbOf(composite()) });
-  toast('Guardado ✔'); renderHome();
+  toast(t('saved')); renderHome();
 };
 $('#btn-export').onclick = () => {
   composite().toBlob(async blob => {
-    const file = new File([blob], 'dibujo.png', { type: 'image/png' });
+    const file = new File([blob], t('drawingFile'), { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'Mi dibujo' }); return; } catch (_) { }
+      try { await navigator.share({ files: [file], title: t('myDrawing') }); return; } catch (_) { }
     }
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'dibujo.png'; a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = t('drawingFile'); a.click();
   }, 'image/png');
 };
 async function loadProject(p) {
@@ -454,7 +609,7 @@ async function loadProject(p) {
   for (let i = 0; i < state.mask.length; i++) state.mask[i] = md[i * 4 + 3];
   state.undo = [];
   stage.style.width = p.w + 'px'; stage.style.height = p.h + 'px';
-  $('#paint-back').textContent = '← Cuaderno';
+  $('#paint-back').textContent = t('backNotebook');
   show('#screen-paint'); fitView();
 }
 async function renderHome() {
@@ -466,11 +621,12 @@ async function renderHome() {
     const b = document.createElement('button'); b.className = 'notebook';
     b.innerHTML = `<span class="icon"></span><span class="name"></span><span class="count"></span>`;
     b.querySelector('.icon').textContent = nb.icon; b.querySelector('.name').textContent = nb.name;
-    b.querySelector('.count').textContent = n === 1 ? '1 hoja' : n + ' hojas';
+    b.querySelector('.count').textContent = t('sheetCount', n);
     b.onclick = () => openNotebook(nb.id); list.appendChild(b);
   }
   const add = document.createElement('button'); add.className = 'notebook new';
-  add.innerHTML = '<span class="icon">➕</span><span>Nuevo cuaderno</span>';
+  add.innerHTML = '<span class="icon">➕</span><span></span>';
+  add.querySelector('span:last-child').textContent = t('newNotebook');
   add.onclick = async () => { if (await createNotebook()) renderHome(); };
   list.appendChild(add);
 }
@@ -482,27 +638,30 @@ async function openNotebook(id) {
   $('#nb-title').textContent = nb.icon + ' ' + nb.name;
   const list = $('#saved-list'); list.innerHTML = '';
   const all = (await dbAll('projects')).filter(p => p.notebookId === id).sort((a, b) => a.date - b.date);
-  if (!all.length) { const p = document.createElement('p'); p.className = 'lead'; p.textContent = 'Este cuaderno está vacío. Agrega una hoja con la cámara.'; list.appendChild(p); }
+  if (!all.length) { const p = document.createElement('p'); p.className = 'lead'; p.textContent = t('emptyNotebook'); list.appendChild(p); }
   for (const p of all) {
     const d = document.createElement('div'); d.className = 'thumb';
-    d.innerHTML = `<img alt="dibujo guardado"><div class="name"></div><div class="row"><button>Abrir</button><button aria-label="borrar">🗑</button></div>`;
-    d.querySelector('img').src = p.thumb; d.querySelector('.name').textContent = p.name || 'Hoja';
+    d.innerHTML = `<img><div class="name"></div><div class="row"><button></button><button>🗑</button></div>`;
+    d.querySelector('img').src = p.thumb; d.querySelector('img').alt = t('savedDrawing');
+    d.querySelector('.name').textContent = p.name || t('sheet');
     const [open, del] = d.querySelectorAll('button');
+    open.textContent = t('open');
+    del.setAttribute('aria-label', t('deleteLabel'));
     open.onclick = () => loadProject(p);
-    d.querySelector('.name').onclick = async () => { const n = prompt('Nombre de la hoja', p.name || ''); if (n && n.trim()) { p.name = n.trim(); await dbPut('projects', p); openNotebook(id); } };
-    del.onclick = async () => { if (confirm('¿Borrar esta hoja?')) { await dbDel('projects', p.id); openNotebook(id); } };
+    d.querySelector('.name').onclick = async () => { const n = prompt(t('sheetNamePrompt'), p.name || ''); if (n && n.trim()) { p.name = n.trim(); await dbPut('projects', p); openNotebook(id); } };
+    del.onclick = async () => { if (confirm(t('deleteSheetConfirm'))) { await dbDel('projects', p.id); openNotebook(id); } };
     list.appendChild(d);
   }
   show('#screen-notebook');
 }
 $('#nb-back').onclick = () => { currentNb = null; renderHome(); show('#screen-home'); };
 $('#nb-rename').onclick = async () => {
-  const n = prompt('Nuevo nombre del cuaderno', currentNb.name); if (!n || !n.trim()) return;
+  const n = prompt(t('renameNotebookPrompt'), currentNb.name); if (!n || !n.trim()) return;
   currentNb.name = n.trim(); await dbPut('notebooks', currentNb); openNotebook(currentNb.id);
 };
 $('#nb-delete').onclick = async () => {
   const hojas = (await dbAll('projects')).filter(p => p.notebookId === currentNb.id);
-  if (!confirm(`¿Borrar el cuaderno "${currentNb.name}" y sus ${hojas.length} hojas?`)) return;
+  if (!confirm(t('deleteNotebookConfirm', currentNb.name, hojas.length))) return;
   for (const p of hojas) await dbDel('projects', p.id);
   await dbDel('notebooks', currentNb.id);
   currentNb = null; renderHome(); show('#screen-home');
@@ -511,7 +670,7 @@ $('#nb-delete').onclick = async () => {
 // ---------- entrada ----------
 async function handleFile(input, notebookId) {
   const f = input.files && input.files[0]; if (!f) return;
-  try { await openImage(await loadImage(f)); state.notebookId = notebookId || null; } catch (e) { toast('No se pudo abrir la imagen'); }
+  try { await openImage(await loadImage(f)); state.notebookId = notebookId || null; } catch (e) { toast(t('couldNotOpen')); }
   input.value = '';
 }
 $('#file-camera').onchange = e => handleFile(e.target);
@@ -527,7 +686,7 @@ function demoImage() {
   x.fillStyle = gr; x.fillRect(0, 0, 1000, 1300);
   x.strokeStyle = '#333'; x.lineWidth = 3;
   x.strokeRect(80, 200, 840, 900); x.beginPath(); x.moveTo(500, 200); x.lineTo(500, 1100); x.moveTo(80, 500); x.lineTo(920, 500); x.moveTo(80, 800); x.lineTo(920, 800); x.stroke();
-  x.font = 'bold 44px sans-serif'; x.fillStyle = '#222'; x.fillText('Cuenta cuántos hay. Colorea 1 de cada grupo.', 80, 150);
+  x.font = 'bold 44px sans-serif'; x.fillStyle = '#222'; x.fillText(t('demoText'), 80, 150);
   const groups = [[3, 290, 350], [4, 710, 350], [5, 290, 650], [5, 710, 650], [4, 290, 950], [5, 710, 950]];
   for (const [n, cx, cy] of groups) {
     for (let i = 0; i < n; i++) {
@@ -543,8 +702,10 @@ function demoImage() {
 }
 $('#btn-demo').onclick = () => openImage(demoImage());
 
+$$('.lang-btn').forEach(b => b.onclick = () => setLang(b.dataset.lang));
+applyI18n();
 renderHome();
 // ?img=ruta  → abre una imagen directamente (útil para pruebas y ejemplos)
 const qImg = new URLSearchParams(location.search).get('img');
-if (qImg) { const im = new Image(); im.onload = () => openImage(im); im.onerror = () => toast('No se pudo cargar ' + qImg); im.src = qImg; }
+if (qImg) { const im = new Image(); im.onload = () => openImage(im); im.onerror = () => toast(t('couldNotLoad') + ' ' + qImg); im.src = qImg; }
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => { });
