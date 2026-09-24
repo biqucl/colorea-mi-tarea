@@ -12,6 +12,7 @@ const I18N = {
     takePhoto: 'Tomar foto',
     chooseImage: 'Elegir imagen',
     tryDemo: 'Probar con ejemplo',
+    blankPage: 'Página en blanco',
     sampleSheets: 'Hojas de ejemplo:',
     lesson10: 'Lección 10',
     lesson11: 'Lección 11',
@@ -72,6 +73,7 @@ const I18N = {
     takePhoto: 'Take photo',
     chooseImage: 'Choose image',
     tryDemo: 'Try a sample',
+    blankPage: 'Blank page',
     sampleSheets: 'Sample sheets:',
     lesson10: 'Lesson 10',
     lesson11: 'Lesson 11',
@@ -379,9 +381,17 @@ function startPainting(fresh) {
     state.undo = [];
   }
   stage.style.width = w + 'px'; stage.style.height = h + 'px';
-  $('#paint-back').textContent = t('backAdjust');
+  $('#paint-back').textContent = paintBackLabel();
   show('#screen-paint');
   fitView();
+}
+// hoja en blanco (tamaño carta, vertical) para dibujar libremente
+function openBlank(notebookId) {
+  state.h = MIN_SIDE; state.w = Math.round(MIN_SIDE * 8.5 / 11);
+  state.mask = new Uint8Array(state.w * state.h);
+  state.gray = null; state.invert = false;
+  state.projectId = null; state.projectName = null; state.notebookId = notebookId || null;
+  startPainting(true);
 }
 $('#paint-back').onclick = () => { if (state.gray) show('#screen-adjust'); else if (state.notebookId) openNotebook(state.notebookId); else show('#screen-home'); };
 
@@ -587,6 +597,7 @@ $('#btn-save').onclick = async () => {
   await dbPut('projects', { id: state.projectId, notebookId: state.notebookId, name: state.projectName || t('sheet'), date: Date.now(),
     w: state.w, h: state.h, invert: state.invert,
     lines: cLines.toDataURL('image/png'), color: cColor.toDataURL('image/png'), thumb: thumbOf(composite()) });
+  $('#paint-back').textContent = paintBackLabel();
   toast(t('saved')); renderHome();
 };
 $('#btn-export').onclick = () => {
@@ -701,6 +712,8 @@ function demoImage() {
   return c;
 }
 $('#btn-demo').onclick = () => openImage(demoImage());
+$('#btn-blank').onclick = () => openBlank();
+$('#nb-blank').onclick = () => openBlank(currentNb && currentNb.id);
 
 $$('.lang-btn').forEach(b => b.onclick = () => setLang(b.dataset.lang));
 applyI18n();

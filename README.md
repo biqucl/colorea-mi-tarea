@@ -9,6 +9,7 @@ App web (PWA) para iPad/tablet: convierte una foto de una hoja de tarea en un di
 3. Compartir → "Añadir a pantalla de inicio" para instalarla (funciona sin conexión después).
 
 ## Funciones
+- Página en blanco para dibujar libremente (desde el inicio o dentro de un cuaderno).
 - Tomar foto o elegir imagen; umbral adaptativo para fotos con sombras; líneas con bordes suavizados.
 - Ajustes: grosor de líneas, sensibilidad, limpieza de puntos, giro de 90°, enderezado fino (±10°), modo fondo oscuro.
 - Herramientas: cubo (relleno limitado por las líneas), pincel, borrador, mover, deshacer.
