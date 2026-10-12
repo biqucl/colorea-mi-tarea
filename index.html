@@ -31,6 +31,7 @@
       <input type="file" accept="image/*" id="file-gallery" hidden>
     </label>
     <button class="bigbtn" id="btn-blank">📄 <span data-i18n="blankPage">Página en blanco</span></button>
+    <button class="bigbtn" id="btn-callig">✍️ <span data-i18n="calligraphy">Caligrafía</span></button>
     <button class="bigbtn" id="btn-demo">✏️ <span data-i18n="tryDemo">Probar con ejemplo</span></button>
   </div>
   <div class="samples">
@@ -147,7 +148,38 @@
   </footer>
 </section>
 
+<!-- Pantalla de caligrafía -->
+<section id="screen-callig" class="screen hidden">
+  <header class="bar">
+    <button class="btn" id="cal-back" data-i18n="backHome">← Inicio</button>
+    <div class="cal-sets">
+      <button class="btn cal-set" data-set="upper">ABC</button>
+      <button class="btn cal-set" data-set="lower">abc</button>
+      <button class="btn cal-set" data-set="digits">123</button>
+    </div>
+  </header>
+  <div class="cal-chips" id="cal-chips"></div>
+  <div class="cal-main">
+    <div class="cal-col">
+      <div class="cal-label" data-i18n="calWatch">👀 Mira</div>
+      <div class="cal-panel" id="cal-model"><svg preserveAspectRatio="xMidYMid meet"></svg></div>
+    </div>
+    <div class="cal-col">
+      <div class="cal-label" data-i18n="calYourTurn">✍️ Ahora tú</div>
+      <div class="cal-panel" id="cal-practice"><svg preserveAspectRatio="xMidYMid meet"></svg><canvas id="cal-canvas"></canvas></div>
+    </div>
+  </div>
+  <footer class="cal-actions">
+    <button class="btn" id="cal-prev" data-i18n-title="calPrev">⬅️</button>
+    <button class="btn primary" id="cal-play">🔁 <span data-i18n="calReplay">Ver otra vez</span></button>
+    <button class="btn" id="cal-undo" data-i18n-title="undo">↶</button>
+    <button class="btn" id="cal-clear">🧽 <span data-i18n="calClear">Borrar</span></button>
+    <button class="btn" id="cal-next" data-i18n-title="calNext">➡️</button>
+  </footer>
+</section>
+
 <div id="toast" class="toast hidden"></div>
 <script src="app.js"></script>
+<script src="caligrafia.js"></script>
 </body>
 </html>

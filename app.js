@@ -66,6 +66,13 @@ const I18N = {
     backNotebook: '← Cuaderno',
     demoText: 'Cuenta cuántos hay. Colorea 1 de cada grupo.',
     deleteLabel: 'borrar',
+    calligraphy: 'Caligrafía',
+    calWatch: '👀 Mira',
+    calYourTurn: '✍️ Ahora tú',
+    calReplay: 'Ver otra vez',
+    calClear: 'Borrar',
+    calPrev: 'Anterior',
+    calNext: 'Siguiente',
   },
   en: {
     appTitle: 'Color My Homework',
@@ -127,6 +134,13 @@ const I18N = {
     backNotebook: '← Notebook',
     demoText: 'Count how many. Color 1 in each group.',
     deleteLabel: 'delete',
+    calligraphy: 'Handwriting',
+    calWatch: '👀 Watch',
+    calYourTurn: '✍️ Your turn',
+    calReplay: 'Watch again',
+    calClear: 'Clear',
+    calPrev: 'Previous',
+    calNext: 'Next',
   },
 };
 let lang = localStorage.getItem('lang');
@@ -160,6 +174,7 @@ async function setLang(next) {
   applyI18n();
   await renderHome();
   if (!$('#screen-notebook').classList.contains('hidden') && currentNb) await openNotebook(currentNb.id);
+  calOnLang();
 }
 
 // ---------- estado ----------

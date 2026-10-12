@@ -9,6 +9,7 @@ App web (PWA) para iPad/tablet: convierte una foto de una hoja de tarea en un di
 3. Compartir → "Añadir a pantalla de inicio" para instalarla (funciona sin conexión después).
 
 ## Funciones
+- Caligrafía: mayúsculas, minúsculas (con ñ en español) y números. La letra se escribe sola, trazo por trazo, con una flecha que avanza; cada trazo tiene su número y su color. Al lado, una hoja con renglones y la misma animación en color suave para repasarla con el dedo (deshacer, borrar, ver otra vez).
 - Página en blanco para dibujar libremente (desde el inicio o dentro de un cuaderno).
 - Tomar foto o elegir imagen; umbral adaptativo para fotos con sombras; líneas con bordes suavizados.
 - Ajustes: grosor de líneas, sensibilidad, limpieza de puntos, giro de 90°, enderezado fino (±10°), modo fondo oscuro.

@@ -1,5 +1,5 @@
-const CACHE = 'colorea-v10';
-const FILES = ['./', './index.html', './styles.css', './app.js', './manifest.json', './icon.svg'];
+const CACHE = 'colorea-v11';
+const FILES = ['./', './index.html', './styles.css', './app.js', './caligrafia.js', './manifest.json', './icon.svg'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))));
 self.addEventListener('activate', e => e.waitUntil(
   caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))));
