@@ -87,7 +87,7 @@ const CAL_SPEED = 90;     // unidades por segundo
 const CAL_PAUSE = 350;    // pausa entre trazos (ms)
 const CAL_WIDTH = 9;      // grosor del trazo, en unidades
 
-const cal = { set: 'upper', ch: 'A', model: null, practice: null, raf: 0, ink: [], cur: null };
+const cal = { set: 'upper', ch: 'A', model: null, practice: null, raf: 0, ink: [], cur: null, pen: 0 };
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 function svgEl(tag, attrs, parent) {
@@ -206,16 +206,16 @@ function calMetrics() {
   const s = Math.min(r.width / CAL_VIEW.w, r.height / CAL_VIEW.h);
   return { r, s, ox: (r.width - CAL_VIEW.w * s) / 2 - CAL_VIEW.x * s, oy: (r.height - CAL_VIEW.h * s) / 2 - CAL_VIEW.y * s };
 }
-function calPen() {
+function calPen(color) {
   const m = calMetrics(), dpr = window.devicePixelRatio || 1;
   calCtx.setTransform(dpr * m.s, 0, 0, dpr * m.s, dpr * m.ox, dpr * m.oy);
-  calCtx.strokeStyle = '#1a3a9e'; calCtx.lineWidth = CAL_WIDTH; calCtx.lineCap = calCtx.lineJoin = 'round';
+  calCtx.strokeStyle = color; calCtx.lineWidth = CAL_WIDTH; calCtx.lineCap = calCtx.lineJoin = 'round';
 }
 function calRedraw() {
   calCtx.setTransform(1, 0, 0, 1, 0, 0);
   calCtx.clearRect(0, 0, calCanvas.width, calCanvas.height);
-  calPen();
-  for (const pts of cal.ink) {
+  for (const { color, pts } of cal.ink) {
+    calPen(color);
     calCtx.beginPath(); calCtx.moveTo(pts[0].x, pts[0].y);
     if (pts.length === 1) calCtx.lineTo(pts[0].x + 0.01, pts[0].y);
     for (const p of pts) calCtx.lineTo(p.x, p.y);
@@ -235,18 +235,33 @@ calCanvas.addEventListener('pointerdown', e => {
   if (cal.cur) return;   // un solo dedo a la vez
   calCanvas.setPointerCapture(e.pointerId);
   const p = calPoint(e);
-  cal.cur = { id: e.pointerId, pts: [p] }; cal.ink.push(cal.cur.pts);
-  calPen(); calCtx.beginPath(); calCtx.moveTo(p.x, p.y); calCtx.lineTo(p.x + 0.01, p.y); calCtx.stroke();
+  cal.cur = { id: e.pointerId, color: calColor(cal.pen), pts: [p] }; cal.ink.push(cal.cur);
+  calPen(cal.cur.color); calCtx.beginPath(); calCtx.moveTo(p.x, p.y); calCtx.lineTo(p.x + 0.01, p.y); calCtx.stroke();
 });
 calCanvas.addEventListener('pointermove', e => {
   if (!cal.cur || cal.cur.id !== e.pointerId) return;
   const p = calPoint(e), pts = cal.cur.pts, last = pts[pts.length - 1];
   pts.push(p);
-  calPen(); calCtx.beginPath(); calCtx.moveTo(last.x, last.y); calCtx.lineTo(p.x, p.y); calCtx.stroke();
+  calPen(cal.cur.color); calCtx.beginPath(); calCtx.moveTo(last.x, last.y); calCtx.lineTo(p.x, p.y); calCtx.stroke();
 });
 function calEnd(e) { if (cal.cur && cal.cur.id === e.pointerId) cal.cur = null; }
 calCanvas.addEventListener('pointerup', calEnd);
 calCanvas.addEventListener('pointercancel', calEnd);
+
+// botones de color: uno por trazo, para escribir cada trazo del mismo color que en el modelo
+function calRenderPens() {
+  const box = $('#cal-pens'), n = GLYPHS[cal.set][cal.ch].length;
+  box.replaceChildren();
+  box.classList.toggle('hidden', n < 2);
+  for (let i = 0; i < n; i++) {
+    const b = document.createElement('button');
+    b.className = 'cal-pen' + (i === cal.pen ? ' active' : '');
+    b.style.background = calColor(i); b.textContent = i + 1;
+    b.setAttribute('aria-label', t('calStroke', i + 1));
+    b.onclick = () => { cal.pen = i; $$('.cal-pen').forEach((x, j) => x.classList.toggle('active', j === i)); };
+    box.appendChild(b);
+  }
+}
 
 // ---------- pantalla ----------
 function calRenderChips() {
@@ -270,7 +285,7 @@ function calSelect(ch) {
   if (chip) chip.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   cal.model = calBuildPanel($('#cal-model svg'), false);
   cal.practice = calBuildPanel($('#cal-practice svg'), true);
-  cal.ink = []; cal.cur = null; calResize();
+  cal.ink = []; cal.cur = null; cal.pen = 0; calRenderPens(); calResize();
   calPlay();
 }
 function calSetSet(set) {

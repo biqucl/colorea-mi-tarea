@@ -73,6 +73,7 @@ const I18N = {
     calClear: 'Borrar',
     calPrev: 'Anterior',
     calNext: 'Siguiente',
+    calStroke: n => 'Color del trazo ' + n,
   },
   en: {
     appTitle: 'Color My Homework',
@@ -141,6 +142,7 @@ const I18N = {
     calClear: 'Clear',
     calPrev: 'Previous',
     calNext: 'Next',
+    calStroke: n => 'Stroke ' + n + ' color',
   },
 };
 let lang = localStorage.getItem('lang');
