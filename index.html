@@ -9,7 +9,7 @@
 <title>Colorea Mi Tarea</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
 
@@ -161,12 +161,10 @@
   <div class="cal-chips" id="cal-chips"></div>
   <div class="cal-main">
     <div class="cal-col">
-      <div class="cal-label" data-i18n="calWatch">👀 Mira</div>
-      <div class="cal-panel" id="cal-model"><svg preserveAspectRatio="xMidYMid meet"></svg></div>
+      <div class="cal-panel" id="cal-model"><svg preserveAspectRatio="xMidYMid meet"></svg><div class="cal-label" data-i18n="calWatch">👀 Mira</div></div>
     </div>
     <div class="cal-col">
-      <div class="cal-label" data-i18n="calYourTurn">✍️ Ahora tú</div>
-      <div class="cal-panel" id="cal-practice"><svg preserveAspectRatio="xMidYMid meet"></svg><canvas id="cal-canvas"></canvas></div>
+      <div class="cal-panel" id="cal-practice"><svg preserveAspectRatio="xMidYMid meet"></svg><canvas id="cal-canvas"></canvas><div class="cal-label" data-i18n="calYourTurn">✍️ Ahora tú</div></div>
     </div>
   </div>
   <footer class="cal-actions">
@@ -179,7 +177,7 @@
 </section>
 
 <div id="toast" class="toast hidden"></div>
-<script src="app.js"></script>
-<script src="caligrafia.js"></script>
+<script src="app.js?v=12"></script>
+<script src="caligrafia.js?v=12"></script>
 </body>
 </html>

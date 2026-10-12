@@ -4,7 +4,9 @@
 // Cada glifo es la lista de sus trazos (path SVG) en el orden en que se escriben.
 // Cuadrícula: ancho 0–100. Mayúsculas y números van de y=0 a y=100.
 // Minúsculas: cuerpo de y=50 a y=100, ascendentes desde y=0, descendentes hasta y=140.
-const CAL_VIEW = { x: -5, y: -30, w: 110, h: 180 };
+// área visible: las minúsculas necesitan espacio abajo para las colas (g, j, p, q, y)
+const CAL_VIEWS = { upper: { x: -8, y: -30, w: 116, h: 142 }, digits: { x: -8, y: -24, w: 116, h: 136 }, lower: { x: -8, y: -22, w: 116, h: 172 } };
+let CAL_VIEW = CAL_VIEWS.upper;
 const TILDE_UP = 'M30 -14 C38 -24 45 -22 50 -16 C55 -10 62 -8 70 -18';
 const TILDE_LOW = 'M30 36 C38 26 45 28 50 34 C55 40 62 42 70 32';
 const RING = 'M75 75 A25 25 0 0 0 25 75 A25 25 0 0 0 75 75';   // círculo de a, d, g, q (empieza a la derecha, va por arriba)
@@ -262,12 +264,13 @@ function calRenderChips() {
 }
 function calSelect(ch) {
   cal.ch = ch;
+  CAL_VIEW = CAL_VIEWS[cal.set];
   $$('.cal-chip').forEach(b => b.classList.toggle('active', b.getAttribute('aria-label') === ch));
   const chip = $$('.cal-chip').find(b => b.classList.contains('active'));
   if (chip) chip.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   cal.model = calBuildPanel($('#cal-model svg'), false);
   cal.practice = calBuildPanel($('#cal-practice svg'), true);
-  cal.ink = []; cal.cur = null; calRedraw();
+  cal.ink = []; cal.cur = null; calResize();
   calPlay();
 }
 function calSetSet(set) {
