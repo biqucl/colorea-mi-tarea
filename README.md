@@ -13,6 +13,7 @@ App web (PWA) para iPad/tablet: convierte una foto de una hoja de tarea en un di
 - Juegos (sin tiempo límite, con voz que se puede apagar):
   - Memoria: encontrar pares de mayúscula/minúscula, número/puntos o palabra en español/inglés.
   - Contar: ¿cuántos hay? (1–5 o 1–10). Al tocar cada objeto se marca con su número; tres respuestas grandes y una estrella por acierto.
+  - Atrapa y cuenta: los animalitos caminan por el campo; se atrapan dibujando un círculo alrededor (con el dedo o el lápiz) y, cuando están todos quietos, hay que contarlos. Velocidad 🐢/🐇.
 - Página en blanco para dibujar libremente (desde el inicio o dentro de un cuaderno).
 - Tomar foto o elegir imagen; umbral adaptativo para fotos con sombras; líneas con bordes suavizados.
 - Ajustes: grosor de líneas, sensibilidad, limpieza de puntos, giro de 90°, enderezado fino (±10°), modo fondo oscuro.

@@ -249,4 +249,232 @@ function gamesOnLang() {
   soundIcons();
   if (!$('#screen-count').classList.contains('hidden')) $('#cnt-question').textContent = cntQuestion();
   if (!$('#screen-memory').classList.contains('hidden') && mem.mode === 'case') memNew();
+  if (!$('#screen-catch').classList.contains('hidden')) { catPrompt(); catButtons(); $('#catch-hint').textContent = t(cat.phase === 'catch' ? 'catchHint' : 'countHint'); }
 }
+
+// ---------- atrapa y cuenta ----------
+// los animalitos caminan por el campo; se atrapan dibujando un círculo a su alrededor y al final se cuentan
+const CATCH_ANIMALS = [
+  { e: '🐻', es: 'ositos', en: 'bears' }, { e: '🐵', es: 'monitos', en: 'monkeys' },
+  { e: '🐸', es: 'sapitos', en: 'frogs' }, { e: '🦊', es: 'zorritos', en: 'foxes' },
+  { e: '🐷', es: 'cerditos', en: 'piglets' }, { e: '🐱', es: 'gatitos', en: 'kittens' },
+  { e: '🐶', es: 'perritos', en: 'puppies' }, { e: '🦆', es: 'patitos', en: 'ducks' },
+];
+const cat = {
+  max: +localStorage.getItem('catchMax') === 10 ? 10 : 5, fast: localStorage.getItem('catchFast') === '1',
+  kind: null, n: 0, animals: [], loops: [], ghosts: [], stroke: null, pid: null, phase: 'catch',
+  marked: [], stars: 0, busy: false, w: 0, h: 0, s: 80, raf: 0, last: 0,
+};
+const catCanvas = $('#catch-canvas'), catCtx = catCanvas.getContext('2d');
+const catName = () => cat.kind[lang] || cat.kind.es;
+
+function catResize() {
+  const r = catCanvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  if (!r.width || !r.height) return;
+  // al cambiar el tamaño, los animalitos y sus círculos conservan su posición relativa
+  if (cat.w) {
+    const kx = r.width / cat.w, ky = r.height / cat.h;
+    cat.animals.forEach(a => { a.x *= kx; a.y *= ky; });
+    cat.loops.forEach(l => l.forEach(p => { p.x *= kx; p.y *= ky; }));
+  }
+  cat.w = r.width; cat.h = r.height;
+  cat.s = Math.max(56, Math.min(110, Math.min(r.width, r.height) / 6));
+  catCanvas.width = Math.round(r.width * dpr); catCanvas.height = Math.round(r.height * dpr);
+  catCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function catNew() {
+  catResize();
+  let n;
+  do n = 1 + Math.floor(Math.random() * cat.max); while (n === cat.n && cat.max > 1);
+  let kind;
+  do kind = CATCH_ANIMALS[Math.floor(Math.random() * CATCH_ANIMALS.length)]; while (kind === cat.kind);
+  const s = cat.s, animals = [];
+  for (let i = 0; i < n; i++) {
+    let x, y, tries = 0;
+    do { x = s / 2 + Math.random() * (cat.w - s); y = s / 2 + Math.random() * (cat.h - s); }
+    while (tries++ < 60 && animals.some(a => Math.hypot(a.x - x, a.y - y) < s * 1.3));
+    animals.push({ x, y, ang: Math.random() * Math.PI * 2, caught: false, rest: 0 });
+  }
+  Object.assign(cat, { n, kind, animals, loops: [], ghosts: [], stroke: null, pid: null, phase: 'catch', marked: [], busy: false });
+  $('#catch-answers').innerHTML = '';
+  $('#catch-answers').classList.add('hidden');
+  $('#catch-hint').textContent = t('catchHint');
+  catPrompt();
+  say(catPromptText());
+}
+function catPromptText() { return cat.phase === 'catch' ? t('catchGo', catName()) : t('catchHowMany', catName()); }
+function catPrompt() { $('#catch-question').textContent = catPromptText(); }
+
+// movimiento: pasean cambiando de rumbo de a poco y rebotan en los bordes.
+// Atraparlos es sólo la parte divertida (la misión es contar), así que mientras se dibuja van mucho más lento.
+function catStep(dt) {
+  const s = cat.s, base = s * (cat.fast ? 1 : 0.5) * (cat.stroke ? 0.3 : 1);
+  cat.animals.forEach(a => {
+    if (a.caught) return;
+    if (a.rest > 0) { a.rest -= dt; return; }
+    if (Math.random() < dt * 0.15) { a.rest = 0.6 + Math.random() * 1.2; return; }   // a veces se detienen un ratito
+    a.ang += (Math.random() - 0.5) * dt * 3;
+    a.x += Math.cos(a.ang) * base * dt; a.y += Math.sin(a.ang) * base * dt;
+    const m = s / 2;
+    if (a.x < m) { a.x = m; a.ang = Math.PI - a.ang; }
+    if (a.x > cat.w - m) { a.x = cat.w - m; a.ang = Math.PI - a.ang; }
+    if (a.y < m) { a.y = m; a.ang = -a.ang; }
+    if (a.y > cat.h - m) { a.y = cat.h - m; a.ang = -a.ang; }
+  });
+}
+
+function catPath(pts, close) {
+  catCtx.beginPath();
+  pts.forEach((p, i) => i ? catCtx.lineTo(p.x, p.y) : catCtx.moveTo(p.x, p.y));
+  if (close) catCtx.closePath();
+}
+function catDraw(now) {
+  const c = catCtx, s = cat.s;
+  c.clearRect(0, 0, cat.w, cat.h);
+  c.lineJoin = c.lineCap = 'round';
+  cat.loops.forEach(l => { catPath(l, true); c.fillStyle = 'rgba(255,212,0,.12)'; c.fill(); c.strokeStyle = '#f9a825'; c.lineWidth = 7; c.stroke(); });
+  cat.ghosts = cat.ghosts.filter(g => now - g.t < 700);
+  cat.ghosts.forEach(g => { catPath(g.pts); c.strokeStyle = `rgba(120,120,120,${1 - (now - g.t) / 700})`; c.lineWidth = 7; c.stroke(); });
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.font = `${Math.round(s * 0.8)}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
+  // sombra oscura alrededor para que se distingan bien del fondo blanco
+  c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = s * 0.1;
+  c.fillStyle = '#000';   // opaco: el emoji toma la transparencia del color de relleno
+  cat.animals.forEach(a => {
+    c.save(); c.translate(a.x, a.y);
+    if (!a.caught && Math.cos(a.ang) > 0) c.scale(-1, 1);   // mira hacia donde camina
+    if (!a.caught && a.rest <= 0) c.rotate(Math.sin(now / 90 + a.x) * 0.08);   // se bambolea al caminar
+    c.fillText(cat.kind.e, 0, 0);
+    c.restore();
+  });
+  c.shadowBlur = 0;
+  cat.marked.forEach((a, k) => {
+    c.beginPath(); c.arc(a.x + s * 0.36, a.y - s * 0.36, s * 0.2, 0, Math.PI * 2); c.fillStyle = '#111'; c.fill();
+    c.fillStyle = '#fff'; c.font = `bold ${Math.round(s * 0.26)}px Arial,sans-serif`;
+    c.fillText(k + 1, a.x + s * 0.36, a.y - s * 0.35);
+  });
+  if (cat.stroke) { catPath(cat.stroke); c.strokeStyle = '#1565c0'; c.lineWidth = 8; c.stroke(); }
+}
+function catLoop(now) {
+  if ($('#screen-catch').classList.contains('hidden')) return;
+  const dt = Math.min(0.05, (now - (cat.last || now)) / 1000);
+  cat.last = now;
+  if (cat.phase === 'catch') catStep(dt);
+  catDraw(now);
+  cat.raf = requestAnimationFrame(catLoop);
+}
+
+function inPoly(x, y, pts) {
+  let inside = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const a = pts[i], b = pts[j];
+    if ((a.y > y) !== (b.y > y) && x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x) inside = !inside;
+  }
+  return inside;
+}
+function catPoint(e) { const r = catCanvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+
+catCanvas.addEventListener('pointerdown', e => {
+  if (cat.pid !== null) return;
+  const p = catPoint(e);
+  if (cat.phase === 'count') {
+    // contar: tocar un animalito lo marca con su número; tocarlo otra vez lo desmarca
+    const a = cat.animals.find(a => Math.hypot(a.x - p.x, a.y - p.y) < cat.s * 0.6);
+    if (!a) return;
+    const i = cat.marked.indexOf(a);
+    if (i >= 0) cat.marked.splice(i, 1); else { cat.marked.push(a); say(String(cat.marked.length)); }
+    return;
+  }
+  cat.pid = e.pointerId;
+  cat.stroke = [p];
+  try { catCanvas.setPointerCapture(e.pointerId); } catch (_) { }
+});
+catCanvas.addEventListener('pointermove', e => {
+  if (e.pointerId !== cat.pid || !cat.stroke) return;
+  const p = catPoint(e), last = cat.stroke[cat.stroke.length - 1];
+  if (Math.hypot(p.x - last.x, p.y - last.y) > 3) cat.stroke.push(p);
+});
+function catEnd(e) {
+  if (e.pointerId !== cat.pid) return;
+  cat.pid = null;
+  const pts = cat.stroke; cat.stroke = null;
+  if (!pts || pts.length < 8) return;
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  const size = Math.hypot(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
+  const gap = Math.hypot(pts[0].x - pts[pts.length - 1].x, pts[0].y - pts[pts.length - 1].y);
+  // se acepta un círculo "casi cerrado": los niños no siempre unen las puntas
+  const closed = size > cat.s * 0.6 && gap < Math.max(cat.s * 1.2, size * 0.35);
+  // basta con encerrar parte del animalito (el centro o algún borde)
+  const r = cat.s * 0.3, probe = [[0, 0], [r, 0], [-r, 0], [0, r], [0, -r]];
+  const got = closed ? cat.animals.filter(a => !a.caught && probe.some(([dx, dy]) => inPoly(a.x + dx, a.y + dy, pts))) : [];
+  if (!got.length) {
+    cat.ghosts.push({ pts, t: performance.now() });
+    toast(closed ? t('catchMissed') : t('catchClose'));
+    return;
+  }
+  got.forEach(a => { a.caught = true; });
+  cat.loops.push(pts);
+  say(t('catchGot'));
+  if (cat.animals.every(a => a.caught)) setTimeout(catAsk, 900);
+}
+catCanvas.addEventListener('pointerup', catEnd);
+catCanvas.addEventListener('pointercancel', catEnd);
+
+function catAsk() {
+  cat.phase = 'count';
+  catPrompt();
+  $('#catch-hint').textContent = t('countHint');
+  const n = cat.n, opts = new Set([n]);
+  for (const d of shuffle([-2, -1, 1, 2])) { if (opts.size === 3) break; if (n + d >= 1 && n + d <= cat.max) opts.add(n + d); }
+  for (let k = 1; opts.size < 3 && k <= 10; k++) opts.add(k);
+  const box = $('#catch-answers');
+  box.innerHTML = '';
+  [...opts].sort((a, b) => a - b).forEach(v => {
+    const b = document.createElement('button');
+    b.className = 'cnt-ans'; b.textContent = v;
+    b.onclick = () => catAnswer(v, b);
+    box.appendChild(b);
+  });
+  box.classList.remove('hidden');
+  say(catPromptText());
+}
+function catAnswer(v, b) {
+  if (cat.busy || b.disabled) return;
+  if (v === cat.n) {
+    cat.busy = true;
+    b.classList.add('right');
+    cat.stars++;
+    catStars();
+    say(t('catchYes', v, catName()));
+    if (cat.stars % 5 === 0) setTimeout(() => celebrate(catNew), 1400);
+    else setTimeout(catNew, 2400);
+  } else {
+    b.classList.add('wrong'); b.disabled = true;
+    say(t('tryAgain'));
+  }
+}
+function catStars() { $('#catch-stars').textContent = '⭐ ' + cat.stars; }
+function catButtons() {
+  $$('.catch-range').forEach(b => b.classList.toggle('active', +b.dataset.max === cat.max));
+  const sp = $('#catch-speed');
+  sp.textContent = cat.fast ? '🐇' : '🐢';
+  sp.title = t(cat.fast ? 'catchFast' : 'catchSlow');
+}
+
+function openCatch() {
+  show('#screen-catch'); soundIcons(); catStars(); catButtons();
+  cat.w = 0; catNew();
+  cancelAnimationFrame(cat.raf); cat.last = 0; cat.raf = requestAnimationFrame(catLoop);
+}
+$$('.catch-range').forEach(b => b.onclick = () => { cat.max = +b.dataset.max; localStorage.setItem('catchMax', cat.max); catButtons(); catNew(); });
+$('#catch-speed').onclick = () => { cat.fast = !cat.fast; localStorage.setItem('catchFast', cat.fast ? '1' : '0'); catButtons(); };
+$('#catch-hear').onclick = () => say(catPromptText());
+$('#games-catch').onclick = openCatch;
+$('#catch-back').onclick = () => {
+  cancelAnimationFrame(cat.raf);
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  $('#game-win').classList.add('hidden');
+  openGames();
+};
+window.addEventListener('resize', () => { if (!$('#screen-catch').classList.contains('hidden')) catResize(); });
