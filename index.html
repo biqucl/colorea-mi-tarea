@@ -9,7 +9,7 @@
 <title>Colorea Mi Tarea</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 </head>
 <body>
 
@@ -32,6 +32,7 @@
     </label>
     <button class="bigbtn" id="btn-blank">📄 <span data-i18n="blankPage">Página en blanco</span></button>
     <button class="bigbtn" id="btn-callig">✍️ <span data-i18n="calligraphy">Caligrafía</span></button>
+    <button class="bigbtn" id="btn-games">🎲 <span data-i18n="games">Juegos</span></button>
     <button class="bigbtn" id="btn-demo">✏️ <span data-i18n="tryDemo">Probar con ejemplo</span></button>
   </div>
   <div class="samples">
@@ -177,8 +178,68 @@
   </footer>
 </section>
 
+<!-- Menú de juegos -->
+<section id="screen-games" class="screen hidden">
+  <header class="bar">
+    <button class="btn" id="games-back" data-i18n="backHome">← Inicio</button>
+    <span class="title" data-i18n="games">Juegos</span>
+    <span></span>
+  </header>
+  <div class="games-body">
+    <button class="game-pick" id="games-memory"><span class="icon">🃏</span><b data-i18n="memory">Memoria</b><span data-i18n="memoryDesc">Encuentra los pares</span></button>
+    <button class="game-pick" id="games-count"><span class="icon">🍎</span><b data-i18n="count">Contar</b><span data-i18n="countDesc">¿Cuántos hay?</span></button>
+  </div>
+</section>
+
+<!-- Juego de memoria -->
+<section id="screen-memory" class="screen hidden">
+  <header class="bar game-bar">
+    <button class="btn" id="mem-back" data-i18n="backGames">← Juegos</button>
+    <div class="row">
+      <button class="btn mem-mode" data-mode="case" data-i18n-title="memCase">Aa</button>
+      <button class="btn mem-mode" data-mode="dots" data-i18n-title="memDots">3 ⁘</button>
+      <button class="btn mem-mode" data-mode="words" data-i18n-title="memWords">ES·EN</button>
+    </div>
+    <div class="row">
+      <button class="btn snd-btn">🔊</button>
+      <button class="btn" id="mem-restart" data-i18n-title="newGame">🔄</button>
+    </div>
+  </header>
+  <div id="mem-grid" class="mem-grid"></div>
+</section>
+
+<!-- Juego de contar -->
+<section id="screen-count" class="screen hidden">
+  <header class="bar game-bar">
+    <button class="btn" id="cnt-back" data-i18n="backGames">← Juegos</button>
+    <div class="row">
+      <button class="btn cnt-range" data-max="5">1–5</button>
+      <button class="btn cnt-range" data-max="10">1–10</button>
+    </div>
+    <div class="row">
+      <span class="cnt-stars" id="cnt-stars">⭐ 0</span>
+      <button class="btn snd-btn">🔊</button>
+    </div>
+  </header>
+  <div class="cnt-q"><span id="cnt-question"></span><button class="btn" id="cnt-hear" data-i18n-title="hear">🔊</button></div>
+  <div class="cnt-field-wrap"><svg id="cnt-field" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="cnt-hint" data-i18n="countHint">Toca cada uno para contarlo</div>
+  <div id="cnt-answers" class="cnt-answers"></div>
+</section>
+
+<!-- Festejo al terminar -->
+<div id="game-win" class="overlay hidden">
+  <div class="sheet win">
+    <div class="win-big">🎉</div>
+    <h2 data-i18n="wellDone">¡Muy bien!</h2>
+    <div class="win-stars">⭐⭐⭐</div>
+    <button class="bigbtn primary" id="game-win-again" data-i18n="playAgain">Jugar otra vez</button>
+  </div>
+</div>
+
 <div id="toast" class="toast hidden"></div>
-<script src="app.js?v=13"></script>
-<script src="caligrafia.js?v=13"></script>
+<script src="app.js?v=14"></script>
+<script src="caligrafia.js?v=14"></script>
+<script src="juegos.js?v=14"></script>
 </body>
 </html>

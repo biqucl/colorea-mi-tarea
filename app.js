@@ -74,6 +74,24 @@ const I18N = {
     calPrev: 'Anterior',
     calNext: 'Siguiente',
     calStroke: n => 'Color del trazo ' + n,
+    games: 'Juegos',
+    backGames: '← Juegos',
+    memory: 'Memoria',
+    memoryDesc: 'Encuentra los pares',
+    count: 'Contar',
+    countDesc: '¿Cuántos hay?',
+    memCase: 'Mayúscula y minúscula',
+    memDots: 'Número y puntos',
+    memWords: 'Español e inglés',
+    memCard: n => 'Carta ' + n,
+    newGame: 'Nuevo juego',
+    sound: 'Sonido',
+    hear: 'Escuchar',
+    countHint: 'Toca cada uno para contarlo',
+    countYes: n => '¡Sí! Hay ' + n,
+    tryAgain: 'Intenta otra vez',
+    wellDone: '¡Muy bien!',
+    playAgain: 'Jugar otra vez',
   },
   en: {
     appTitle: 'Color My Homework',
@@ -143,6 +161,24 @@ const I18N = {
     calPrev: 'Previous',
     calNext: 'Next',
     calStroke: n => 'Stroke ' + n + ' color',
+    games: 'Games',
+    backGames: '← Games',
+    memory: 'Memory',
+    memoryDesc: 'Find the pairs',
+    count: 'Count',
+    countDesc: 'How many?',
+    memCase: 'Uppercase and lowercase',
+    memDots: 'Number and dots',
+    memWords: 'Spanish and English',
+    memCard: n => 'Card ' + n,
+    newGame: 'New game',
+    sound: 'Sound',
+    hear: 'Listen',
+    countHint: 'Tap each one to count it',
+    countYes: n => 'Yes! There are ' + n,
+    tryAgain: 'Try again',
+    wellDone: 'Well done!',
+    playAgain: 'Play again',
   },
 };
 let lang = localStorage.getItem('lang');
@@ -177,6 +213,7 @@ async function setLang(next) {
   await renderHome();
   if (!$('#screen-notebook').classList.contains('hidden') && currentNb) await openNotebook(currentNb.id);
   calOnLang();
+  gamesOnLang();
 }
 
 // ---------- estado ----------
