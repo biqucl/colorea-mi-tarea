@@ -209,7 +209,8 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);
   .cnt-ans{width:90px;height:84px;font-size:48px}
   .cnt-stars{font-size:20px}
 }
-/* barra de juegos en teléfono: se reparte en dos líneas en vez de salirse */
+/* barra de juegos en pantallas angostas: se reparte en dos líneas en vez de salirse
+   (memoria tiene más botones, así que baja antes) */
 @media (max-width:560px){
   .game-bar{flex-wrap:wrap;justify-content:center;row-gap:8px}
   .game-bar > .btn:first-child{margin-right:auto}
@@ -218,3 +219,8 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);
 
 /* atrapa y cuenta */
 #catch-canvas{width:100%;height:100%;display:block;touch-action:none}
+@media (max-width:1000px){
+  #screen-memory .game-bar{flex-wrap:wrap;justify-content:center;row-gap:8px}
+  #screen-memory .game-bar > .btn:first-child{margin-right:auto}
+  #screen-memory .game-bar > .row:first-of-type{order:3;width:100%;justify-content:center}
+}

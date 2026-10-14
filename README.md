@@ -11,8 +11,8 @@ App web (PWA) para iPad/tablet: convierte una foto de una hoja de tarea en un di
 ## Funciones
 - Caligrafía: mayúsculas, minúsculas (con ñ en español) y números. La letra se escribe sola, trazo por trazo, con una flecha que avanza; cada trazo tiene su número y su color. Al lado, una hoja con renglones y la misma animación en color suave para repasarla con el dedo (deshacer, borrar, ver otra vez).
 - Juegos (sin tiempo límite, con voz que se puede apagar):
-  - Memoria: encontrar pares de mayúscula/minúscula, número/puntos o palabra en español/inglés.
-  - Contar: ¿cuántos hay? (1–5 o 1–10). Al tocar cada objeto se marca con su número; tres respuestas grandes y una estrella por acierto.
+  - Memoria (3, 4 o 6 pares): letras iguales en mayúscula (AA) o minúscula (aa), mayúscula con su minúscula (Aa, más difícil), número/puntos o palabra en español/inglés.
+  - Contar: ¿cuántos hay? (1–5 o 1–10). Al tocar cada objeto se marca (sin mostrar el número, el niño cuenta); tres respuestas grandes y una estrella por acierto.
   - Atrapa y cuenta: los animalitos caminan por el campo; se atrapan dibujando un círculo alrededor (con el dedo o el lápiz) y, cuando están todos quietos, hay que contarlos. Velocidad 🐢/🐇.
 - Página en blanco para dibujar libremente (desde el inicio o dentro de un cuaderno).
 - Tomar foto o elegir imagen; umbral adaptativo para fotos con sombras; líneas con bordes suavizados.

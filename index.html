@@ -9,7 +9,7 @@
 <title>Colorea Mi Tarea</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="styles.css?v=15">
+<link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
 
@@ -197,11 +197,14 @@
   <header class="bar game-bar">
     <button class="btn" id="mem-back" data-i18n="backGames">← Juegos</button>
     <div class="row">
+      <button class="btn mem-mode" data-mode="upper" data-i18n-title="memUpper">AA</button>
+      <button class="btn mem-mode" data-mode="lower" data-i18n-title="memLower">aa</button>
       <button class="btn mem-mode" data-mode="case" data-i18n-title="memCase">Aa</button>
       <button class="btn mem-mode" data-mode="dots" data-i18n-title="memDots">3 ⁘</button>
       <button class="btn mem-mode" data-mode="words" data-i18n-title="memWords">ES·EN</button>
     </div>
     <div class="row">
+      <button class="btn" id="mem-pairs">4 pares</button>
       <button class="btn snd-btn">🔊</button>
       <button class="btn" id="mem-restart" data-i18n-title="newGame">🔄</button>
     </div>
@@ -224,7 +227,7 @@
   </header>
   <div class="cnt-q"><span id="cnt-question"></span><button class="btn" id="cnt-hear" data-i18n-title="hear">🔊</button></div>
   <div class="cnt-field-wrap"><svg id="cnt-field" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet"></svg></div>
-  <div class="cnt-hint" data-i18n="countHint">Toca cada uno para contarlo</div>
+  <div class="cnt-hint" data-i18n="countHint">Toca cada uno mientras cuentas</div>
   <div id="cnt-answers" class="cnt-answers"></div>
 </section>
 
@@ -259,8 +262,8 @@
 </div>
 
 <div id="toast" class="toast hidden"></div>
-<script src="app.js?v=15"></script>
-<script src="caligrafia.js?v=15"></script>
-<script src="juegos.js?v=15"></script>
+<script src="app.js?v=16"></script>
+<script src="caligrafia.js?v=16"></script>
+<script src="juegos.js?v=16"></script>
 </body>
 </html>

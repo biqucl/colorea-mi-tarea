@@ -39,22 +39,31 @@ function celebrate(onAgain) {
 }
 
 // ---------- memoria ----------
-const MEM_PAIRS = 6;
-const mem = { mode: localStorage.getItem('memMode') || 'case', cards: [], open: [], lock: false, done: 0 };
+const MEM_SIZES = [3, 4, 6];
+const MEM_MODES = ['upper', 'lower', 'case', 'dots', 'words'];
+const mem = {
+  mode: MEM_MODES.includes(localStorage.getItem('memMode')) ? localStorage.getItem('memMode') : 'upper',
+  pairs: MEM_SIZES.includes(+localStorage.getItem('memPairs')) ? +localStorage.getItem('memPairs') : 4,
+  cards: [], open: [], lock: false, done: 0,
+};
+const memLetters = set => Object.keys(GLYPHS[set]).filter(c => lang === 'es' || !/[Ññ]/.test(c));
 
 // cada par son dos caras distintas con la misma clave
 function memPairs() {
   if (mem.mode === 'dots') {
-    return shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, MEM_PAIRS)
+    return shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, mem.pairs)
       .map(n => [{ key: n, text: String(n), speak: String(n) }, { key: n, dots: n, speak: String(n) }]);
   }
   if (mem.mode === 'words') {
-    return shuffle(WORDS.slice()).slice(0, MEM_PAIRS)
+    return shuffle(WORDS.slice()).slice(0, mem.pairs)
       .map(([e, es, en]) => [{ key: en, emoji: e, word: es, tag: 'ES', speak: es, lng: 'es' },
                              { key: en, emoji: e, word: en, tag: 'EN', speak: en, lng: 'en' }]);
   }
-  const abc = Object.keys(GLYPHS.upper).filter(c => lang === 'es' || c !== 'Ñ');
-  return shuffle(abc).slice(0, MEM_PAIRS)
+  // AA: mayúscula con mayúscula; aa: minúscula con minúscula; Aa (más difícil): mayúscula con su minúscula
+  if (mem.mode === 'upper' || mem.mode === 'lower') {
+    return shuffle(memLetters(mem.mode)).slice(0, mem.pairs).map(c => [{ key: c, text: c, speak: c }, { key: c, text: c, speak: c }]);
+  }
+  return shuffle(memLetters('upper')).slice(0, mem.pairs)
     .map(c => [{ key: c, text: c, speak: c }, { key: c, text: c.toLowerCase(), speak: c.toLowerCase() }]);
 }
 
@@ -101,6 +110,7 @@ function memNew() {
     grid.appendChild(b);
   });
   $$('.mem-mode').forEach(b => b.classList.toggle('active', b.dataset.mode === mem.mode));
+  $('#mem-pairs').textContent = t('memPairs', mem.pairs);
   memLayout();
 }
 
@@ -114,7 +124,7 @@ function memLayout() {
     const rows = Math.ceil(n / cols);
     if (rows * cols - n >= cols) continue;
     const w = (r.width - pad - gap * (cols - 1)) / cols, h = (r.height - pad - gap * (rows - 1)) / rows;
-    const s = Math.min(w, h / 1.15);
+    const s = Math.min(w, h / 1.15, 260);   // con pocos pares las cartas no crecen sin fin
     if (s > best.s) best = { s, cols, rows };
   }
   const w = Math.floor(best.s), h = Math.floor(best.s * 1.15);
@@ -134,7 +144,7 @@ function memFlip(i, el) {
     a.matched = b.matched = true;
     a.el.classList.add('matched'); b.el.classList.add('matched');
     mem.open = []; mem.done++;
-    if (mem.done === MEM_PAIRS) setTimeout(() => celebrate(memNew), 900);
+    if (mem.done === mem.pairs) setTimeout(() => celebrate(memNew), 900);
   } else {
     mem.lock = true;
     setTimeout(() => {
@@ -147,6 +157,11 @@ function memFlip(i, el) {
 function openMemory() { show('#screen-memory'); soundIcons(); memNew(); }
 $$('.mem-mode').forEach(b => b.onclick = () => { mem.mode = b.dataset.mode; localStorage.setItem('memMode', mem.mode); memNew(); });
 $('#mem-restart').onclick = memNew;
+$('#mem-pairs').onclick = () => {
+  mem.pairs = MEM_SIZES[(MEM_SIZES.indexOf(mem.pairs) + 1) % MEM_SIZES.length];
+  localStorage.setItem('memPairs', mem.pairs);
+  memNew();
+};
 
 // ---------- contar ----------
 const COUNT_THINGS = [
@@ -181,7 +196,7 @@ function cntNew() {
     g.setAttribute('class', 'cnt-obj');
     g.innerHTML = `<circle cx="${x}" cy="${y}" r="38" class="cnt-ring"/>` +
       `<text x="${x}" y="${y + 2}" font-size="56" text-anchor="middle" dominant-baseline="central">${thing.e}</text>` +
-      `<g class="cnt-badge"><circle cx="${x + 26}" cy="${y - 26}" r="16"/><text x="${x + 26}" y="${y - 25}" font-size="20" text-anchor="middle" dominant-baseline="central"></text></g>`;
+      `<g class="cnt-badge"><circle cx="${x + 26}" cy="${y - 26}" r="16"/><text x="${x + 26}" y="${y - 25}" font-size="20" text-anchor="middle" dominant-baseline="central">✓</text></g>`;
     g.onclick = () => cntMark(g);
     svg.appendChild(g);
   });
@@ -202,13 +217,12 @@ function cntNew() {
   say(cntQuestion());
 }
 
-// tocar un objeto lo marca con su número (ayuda a no contar dos veces); tocarlo otra vez lo desmarca
+// tocar un objeto lo marca (ayuda a no contar dos veces); tocarlo otra vez lo desmarca.
+// No se muestra ni se dice el número: contar es tarea del niño.
 function cntMark(g) {
   const i = cnt.marked.indexOf(g);
   if (i >= 0) cnt.marked.splice(i, 1); else cnt.marked.push(g);
-  $$('#cnt-field .cnt-obj').forEach(o => o.classList.toggle('marked', cnt.marked.includes(o)));
-  cnt.marked.forEach((o, k) => { o.querySelector('.cnt-badge text').textContent = k + 1; });
-  if (i < 0) say(String(cnt.marked.length));
+  g.classList.toggle('marked', i < 0);
 }
 
 function cntAnswer(v, b) {
@@ -248,7 +262,8 @@ window.addEventListener('resize', memLayout);
 function gamesOnLang() {
   soundIcons();
   if (!$('#screen-count').classList.contains('hidden')) $('#cnt-question').textContent = cntQuestion();
-  if (!$('#screen-memory').classList.contains('hidden') && mem.mode === 'case') memNew();
+  if (!$('#screen-memory').classList.contains('hidden') && ['upper', 'lower', 'case'].includes(mem.mode)) memNew();
+  if (!$('#screen-memory').classList.contains('hidden')) $('#mem-pairs').textContent = t('memPairs', mem.pairs);
   if (!$('#screen-catch').classList.contains('hidden')) { catPrompt(); catButtons(); $('#catch-hint').textContent = t(cat.phase === 'catch' ? 'catchHint' : 'countHint'); }
 }
 
@@ -349,10 +364,10 @@ function catDraw(now) {
     c.restore();
   });
   c.shadowBlur = 0;
-  cat.marked.forEach((a, k) => {
-    c.beginPath(); c.arc(a.x + s * 0.36, a.y - s * 0.36, s * 0.2, 0, Math.PI * 2); c.fillStyle = '#111'; c.fill();
+  cat.marked.forEach(a => {
+    c.beginPath(); c.arc(a.x + s * 0.36, a.y - s * 0.36, s * 0.2, 0, Math.PI * 2); c.fillStyle = '#2e7d32'; c.fill();
     c.fillStyle = '#fff'; c.font = `bold ${Math.round(s * 0.26)}px Arial,sans-serif`;
-    c.fillText(k + 1, a.x + s * 0.36, a.y - s * 0.35);
+    c.fillText('✓', a.x + s * 0.36, a.y - s * 0.35);
   });
   if (cat.stroke) { catPath(cat.stroke); c.strokeStyle = '#1565c0'; c.lineWidth = 8; c.stroke(); }
 }
@@ -379,11 +394,11 @@ catCanvas.addEventListener('pointerdown', e => {
   if (cat.pid !== null) return;
   const p = catPoint(e);
   if (cat.phase === 'count') {
-    // contar: tocar un animalito lo marca con su número; tocarlo otra vez lo desmarca
+    // contar: tocar un animalito lo marca con ✓ (sin número); tocarlo otra vez lo desmarca
     const a = cat.animals.find(a => Math.hypot(a.x - p.x, a.y - p.y) < cat.s * 0.6);
     if (!a) return;
     const i = cat.marked.indexOf(a);
-    if (i >= 0) cat.marked.splice(i, 1); else { cat.marked.push(a); say(String(cat.marked.length)); }
+    if (i >= 0) cat.marked.splice(i, 1); else cat.marked.push(a);
     return;
   }
   cat.pid = e.pointerId;
