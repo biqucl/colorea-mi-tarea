@@ -9,7 +9,7 @@
 <title>Colorea Mi Tarea</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="styles.css?v=17">
 </head>
 <body>
 
@@ -189,6 +189,7 @@
     <button class="game-pick" id="games-memory"><span class="icon">🃏</span><b data-i18n="memory">Memoria</b><span data-i18n="memoryDesc">Encuentra los pares</span></button>
     <button class="game-pick" id="games-count"><span class="icon">🍎</span><b data-i18n="count">Contar</b><span data-i18n="countDesc">¿Cuántos hay?</span></button>
     <button class="game-pick" id="games-catch"><span class="icon">🐻</span><b data-i18n="catchGame">Atrapa y cuenta</b><span data-i18n="catchDesc">Atrápalos y cuéntalos</span></button>
+    <button class="game-pick" id="games-words"><span class="icon">📖</span><b data-i18n="sightWords">Sight words</b><span data-i18n="sightWordsDesc">Tarjetas para leer</span></button>
   </div>
 </section>
 
@@ -251,6 +252,53 @@
   <div id="catch-answers" class="cnt-answers hidden"></div>
 </section>
 
+<!-- Sight words: tarjetas -->
+<section id="screen-words" class="screen hidden">
+  <header class="bar game-bar">
+    <button class="btn" id="wd-back" data-i18n="back">← Volver</button>
+    <span class="title" id="wd-count"></span>
+    <div class="row">
+      <button class="btn" id="wd-mix">🔀</button>
+      <button class="btn snd-btn">🔊</button>
+    </div>
+  </header>
+  <div id="wd-pick" class="games-body"><div id="wd-units" class="wd-units"></div></div>
+  <div id="wd-play" class="wd-play hidden">
+    <div class="wd-bar"><div id="wd-bar-fill"></div></div>
+    <div class="wd-stage">
+      <div id="wd-card" class="wd-card"><span id="wd-word"></span></div>
+    </div>
+    <div class="wd-actions">
+      <button class="wd-btn no" id="wd-no">✗ <span data-i18n="wordsWrong">Mal</span></button>
+      <div class="wd-small">
+        <button class="btn" id="wd-undo" data-i18n-title="undo">↶</button>
+        <button class="btn" id="wd-hear" data-i18n-title="hear">🔊</button>
+      </div>
+      <button class="wd-btn ok" id="wd-ok">✓ <span data-i18n="wordsRight">Bien</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- Resultado de sight words -->
+<div id="wd-result" class="overlay hidden">
+  <div id="wd-confetti" class="wd-confetti"></div>
+  <div class="sheet win wd-result">
+    <div id="wd-res-icon" class="win-big"></div>
+    <h2 id="wd-res-title"></h2>
+    <div id="wd-res-stars" class="win-stars wd-stars"></div>
+    <div id="wd-res-score" class="wd-score"></div>
+    <div id="wd-res-missed-wrap">
+      <div class="wd-missed-title" data-i18n="wordsToPractice">Para practicar:</div>
+      <div id="wd-res-missed" class="wd-missed"></div>
+    </div>
+    <button class="bigbtn primary" id="wd-res-retry" data-i18n="wordsRetryMissed">Practicar las que faltaron</button>
+    <div class="row wd-res-row">
+      <button class="bigbtn" id="wd-res-again" data-i18n="playAgain">Jugar otra vez</button>
+      <button class="bigbtn" id="wd-res-units" data-i18n="wordsUnits">Unidades</button>
+    </div>
+  </div>
+</div>
+
 <!-- Festejo al terminar -->
 <div id="game-win" class="overlay hidden">
   <div class="sheet win">
@@ -262,8 +310,9 @@
 </div>
 
 <div id="toast" class="toast hidden"></div>
-<script src="app.js?v=16"></script>
-<script src="caligrafia.js?v=16"></script>
-<script src="juegos.js?v=16"></script>
+<script src="app.js?v=17"></script>
+<script src="caligrafia.js?v=17"></script>
+<script src="juegos.js?v=17"></script>
+<script src="palabras.js?v=17"></script>
 </body>
 </html>

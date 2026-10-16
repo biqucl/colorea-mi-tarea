@@ -14,6 +14,7 @@ App web (PWA) para iPad/tablet: convierte una foto de una hoja de tarea en un di
   - Memoria (3, 4 o 6 pares): letras iguales en mayúscula (AA) o minúscula (aa), mayúscula con su minúscula (Aa, más difícil), número/puntos o palabra en español/inglés.
   - Contar: ¿cuántos hay? (1–5 o 1–10). Al tocar cada objeto se marca (sin mostrar el número, el niño cuenta); tres respuestas grandes y una estrella por acierto.
   - Atrapa y cuenta: los animalitos caminan por el campo; se atrapan dibujando un círculo alrededor (con el dedo o el lápiz) y, cuando están todos quietos, hay que contarlos. Velocidad 🐢/🐇.
+  - Sight words (Kindergarten Savvas, unidades 1–3, 18 palabras cada una): una tarjeta grande por palabra; el adulto marca ✓ Bien o ✗ Mal (también con las flechas → / ←, y ↶ para deshacer). Al final, festejo según el resultado (🏆 todas, 🎉 casi todas, 👍 la mitad, 💪 a seguir practicando), las palabras que faltaron para practicarlas de nuevo y el último resultado de cada unidad guardado con la fecha.
 - Página en blanco para dibujar libremente (desde el inicio o dentro de un cuaderno).
 - Tomar foto o elegir imagen; umbral adaptativo para fotos con sombras; líneas con bordes suavizados.
 - Ajustes: grosor de líneas, sensibilidad, limpieza de puntos, giro de 90°, enderezado fino (±10°), modo fondo oscuro.

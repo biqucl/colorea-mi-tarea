@@ -224,3 +224,61 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);
   #screen-memory .game-bar > .btn:first-child{margin-right:auto}
   #screen-memory .game-bar > .row:first-of-type{order:3;width:100%;justify-content:center}
 }
+
+/* sight words: tarjetas */
+.wd-units{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;width:100%}
+.wd-unit{gap:14px;padding:20px}
+.wd-unit b{font-size:44px}
+.wd-preview{font-size:22px;opacity:.8}
+.wd-last{font-size:20px;font-weight:700;color:var(--accent)}
+#wd-mix.active{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+#wd-count{font-variant-numeric:tabular-nums}
+.wd-play{flex:1;min-height:0;display:flex;flex-direction:column}
+.wd-bar{flex:none;height:14px;margin:12px 14px 0;background:var(--btn);border-radius:7px;overflow:hidden}
+#wd-bar-fill{height:100%;width:0;background:var(--accent);transition:width .35s}
+.wd-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:16px 14px;overflow:hidden}
+.wd-card{width:min(100%,1100px);height:100%;max-height:640px;background:#fff;color:#111;border:6px solid var(--accent);border-radius:36px;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 10px 0 rgba(0,0,0,.35)}
+#wd-word{font-family:Arial,"Helvetica Neue",sans-serif;font-weight:700;line-height:1;white-space:nowrap}
+.wd-card.in{animation:wdIn .35s ease-out}
+.wd-card.in-back{animation:wdInBack .35s ease-out}
+.wd-card.out-ok{animation:wdOutOk .42s ease-in forwards;border-color:#2e7d32}
+.wd-card.out-no{animation:wdOutNo .42s ease-in forwards;border-color:#c62828}
+@keyframes wdIn{from{transform:translateY(40px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes wdInBack{from{transform:translateX(-60px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes wdOutOk{0%{transform:none;background:#fff}25%{background:#c8e6c9}100%{transform:translateX(120%) rotate(14deg);opacity:0;background:#c8e6c9}}
+@keyframes wdOutNo{0%{transform:none;background:#fff}25%{background:#ffcdd2}100%{transform:translateX(-120%) rotate(-14deg);opacity:0;background:#ffcdd2}}
+.wd-actions{flex:none;display:flex;align-items:center;justify-content:center;gap:18px;padding:0 14px 18px}
+.wd-btn{flex:1;max-width:340px;min-height:110px;font-size:44px;font-weight:700;color:#fff;border:5px solid transparent;border-radius:28px;cursor:pointer}
+.wd-btn:active{transform:scale(.96)}
+.wd-btn.ok{background:#2e7d32;border-color:#a5d6a7}
+.wd-btn.no{background:#c62828;border-color:#ef9a9a}
+.wd-small{display:flex;flex-direction:column;gap:10px}
+.wd-small .btn:disabled{opacity:.3}
+.wd-result{position:relative;z-index:2;max-height:100%;overflow:auto}
+.wd-score{font-size:34px;font-weight:700}
+.wd-stars span{display:inline-block;animation:wdPop .5s both}
+.wd-stars span.off{filter:grayscale(1);opacity:.25}
+@keyframes wdPop{from{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.35)}to{transform:none}}
+.wd-res-icon.lvl3,.wd-res-icon.lvl2{animation:wdBounce 1s ease-in-out infinite}
+.wd-res-icon.lvl1{animation:wdPop .6s both}
+.wd-res-icon.lvl0{animation:wdFlex 1.2s ease-in-out infinite}
+@keyframes wdBounce{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-22px) rotate(6deg)}}
+@keyframes wdFlex{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.wd-missed-title{font-size:22px;opacity:.8;margin-bottom:8px}
+.wd-missed{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wd-chip{min-height:56px;padding:0 18px;font-size:30px;font-weight:700;background:#fff;color:#111;border:3px solid #c62828;border-radius:14px;cursor:pointer;
+  font-family:Arial,"Helvetica Neue",sans-serif}
+.wd-res-row{display:flex;gap:12px;width:100%}
+.wd-res-row .bigbtn{flex:1;font-size:24px;min-height:72px}
+.wd-confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.wd-confetti i{position:absolute;top:-30px;border-radius:2px;animation:wdFall linear forwards}
+@keyframes wdFall{to{transform:translate(var(--dx),110vh) rotate(var(--rot))}}
+@media (max-width:760px){
+  .wd-btn{min-height:84px;font-size:32px}
+  .wd-unit b{font-size:34px}
+  .wd-card{border-radius:24px}
+}
+@media (orientation:landscape) and (max-height:600px){
+  .wd-btn{min-height:70px}
+}

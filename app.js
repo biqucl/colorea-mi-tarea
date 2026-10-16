@@ -106,6 +106,23 @@ const I18N = {
     catchYes: (n, name) => `¡Sí! Hay ${n} ${name}`,
     catchSlow: 'Lento',
     catchFast: 'Rápido',
+    sightWords: 'Sight words',
+    sightWordsDesc: 'Tarjetas para leer',
+    wordsUnit: n => 'Unidad ' + n,
+    wordsUnits: 'Unidades',
+    wordsCount: n => n + ' palabras',
+    wordsLast: (ok, total, date) => `Última vez (${date}): ${ok} de ${total}`,
+    wordsRight: 'Bien',
+    wordsWrong: 'Mal',
+    wordsMixed: 'Orden mezclado',
+    wordsInOrder: 'En orden',
+    wordsScore: (ok, total) => `Leíste ${ok} de ${total}`,
+    wordsLevel3: '¡Perfecto! ¡Todas!',
+    wordsLevel2: '¡Muy bien!',
+    wordsLevel1: '¡Bien hecho!',
+    wordsLevel0: '¡Sigue practicando!',
+    wordsToPractice: 'Para practicar:',
+    wordsRetryMissed: 'Practicar las que faltaron',
   },
   en: {
     appTitle: 'Color My Homework',
@@ -207,6 +224,23 @@ const I18N = {
     catchYes: (n, name) => `Yes! There are ${n} ${name}`,
     catchSlow: 'Slow',
     catchFast: 'Fast',
+    sightWords: 'Sight words',
+    sightWordsDesc: 'Reading flashcards',
+    wordsUnit: n => 'Unit ' + n,
+    wordsUnits: 'Units',
+    wordsCount: n => n + ' words',
+    wordsLast: (ok, total, date) => `Last time (${date}): ${ok} of ${total}`,
+    wordsRight: 'Right',
+    wordsWrong: 'Wrong',
+    wordsMixed: 'Mixed order',
+    wordsInOrder: 'In order',
+    wordsScore: (ok, total) => `You read ${ok} of ${total}`,
+    wordsLevel3: 'Perfect! All of them!',
+    wordsLevel2: 'Great job!',
+    wordsLevel1: 'Well done!',
+    wordsLevel0: 'Keep practicing!',
+    wordsToPractice: 'To practice:',
+    wordsRetryMissed: 'Practice the missed ones',
   },
 };
 let lang = localStorage.getItem('lang');
@@ -242,6 +276,7 @@ async function setLang(next) {
   if (!$('#screen-notebook').classList.contains('hidden') && currentNb) await openNotebook(currentNb.id);
   calOnLang();
   gamesOnLang();
+  wordsOnLang();
 }
 
 // ---------- estado ----------
