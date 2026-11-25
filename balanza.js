@@ -48,8 +48,13 @@ function balNew() {
     slot.appendChild(el); tray.appendChild(slot);
     return tile;
   });
+  // vaciar el plato: los números de la ronda anterior no siguen ahí
+  $('#bal-right .bal-items').innerHTML = '';
   const left = $('#bal-left .bal-items');
-  left.innerHTML = `<div class="bal-weight"><span>${target}</span></div>`;
+  left.innerHTML = `<button class="bal-weight" aria-label="${target}"><span>${target}</span></button>`;
+  // al tocar la pesa dice su número
+  const w = left.firstChild;
+  w.onclick = () => { say(String(target)); w.classList.remove('pop'); void w.offsetWidth; w.classList.add('pop'); };
   $('#bal-stage').classList.remove('even');
   $('#bal-question').textContent = t('balGo');
   balButtons(); balStars();
@@ -93,7 +98,9 @@ function balLayout() {
   if ($('#screen-balance').classList.contains('hidden')) return;
   const stage = $('#bal-stage'), r = stage.getBoundingClientRect();
   const w = r.width, h = r.height;
-  const L = Math.min(w * 0.3, 380, h * 1.1), cx = w / 2, cy = Math.max(40, h * 0.2);
+  // en pantallas angostas los platos son más anchos que el brazo para que quepan dos números por fila
+  const narrow = w < 600;
+  const L = narrow ? w * 0.27 : Math.min(w * 0.3, 380, h * 1.1), cx = w / 2, cy = Math.max(30, h * (narrow ? 0.1 : 0.2));
   const a = bal.angle * Math.PI / 180;
   const beam = $('#bal-beam');
   beam.style.width = 2 * L + 40 + 'px';
@@ -106,7 +113,7 @@ function balLayout() {
   post.style.height = h - cy + 'px';
   $('#bal-pivot').style.left = cx - 20 + 'px';
   $('#bal-pivot').style.top = cy - 20 + 'px';
-  const pw = Math.min(L * 0.95, 340, w * 0.4);
+  const pw = narrow ? w * 0.46 : Math.min(L * 1.05, 400, w * 0.44);
   [['#bal-left', -1], ['#bal-right', 1]].forEach(([sel, s]) => {
     const p = $(sel);
     p.style.width = pw + 'px';
