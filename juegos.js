@@ -264,6 +264,8 @@ function gamesOnLang() {
   if (!$('#screen-count').classList.contains('hidden')) $('#cnt-question').textContent = cntQuestion();
   if (!$('#screen-memory').classList.contains('hidden') && ['upper', 'lower', 'case'].includes(mem.mode)) memNew();
   if (!$('#screen-memory').classList.contains('hidden')) $('#mem-pairs').textContent = t('memPairs', mem.pairs);
+  if (typeof gatoOnLang === 'function') gatoOnLang();
+  if (typeof balOnLang === 'function') balOnLang();
   if (!$('#screen-catch').classList.contains('hidden')) { catPrompt(); catButtons(); $('#catch-hint').textContent = t(cat.phase === 'catch' ? 'catchHint' : 'countHint'); }
 }
 

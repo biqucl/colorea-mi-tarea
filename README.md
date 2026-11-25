@@ -15,6 +15,8 @@ App web (PWA) para iPad/tablet: convierte una foto de una hoja de tarea en un di
   - Contar: ¿cuántos hay? (1–5 o 1–10). Al tocar cada objeto se marca (sin mostrar el número, el niño cuenta); tres respuestas grandes y una estrella por acierto.
   - Atrapa y cuenta: los animalitos caminan por el campo; se atrapan dibujando un círculo alrededor (con el dedo o el lápiz) y, cuando están todos quietos, hay que contarlos. Velocidad 🐢/🐇.
   - Sight words (Kindergarten Savvas, unidades 1–3, 18 palabras cada una): una tarjeta grande por palabra; el adulto marca ✓ Bien o ✗ Mal (también con las flechas → / ←, y ↶ para deshacer). Al final, festejo según el resultado (🏆 todas, 🎉 casi todas, 👍 la mitad, 💪 a seguir practicando), las palabras que faltaron para practicarlas de nuevo y el último resultado de cada unidad guardado con la fecha.
+  - Gato (tres en línea): contra la compu en Fácil (juega al azar), Medio (gana o bloquea si puede) o Difícil (nunca pierde), o 👫 de a dos en el mismo aparato. Se turna quién parte y se lleva el marcador.
+  - Balanza: un lado tiene una pesa con un número; hay que arrastrar (o tocar) números al plato vacío hasta que la balanza quede pareja. La barra se inclina hacia el lado más pesado y debajo se ve la suma. Rango 1–10 o 1–20; una estrella por acierto.
 - Página en blanco para dibujar libremente (desde el inicio o dentro de un cuaderno).
 - Tomar foto o elegir imagen; umbral adaptativo para fotos con sombras; líneas con bordes suavizados.
 - Ajustes: grosor de líneas, sensibilidad, limpieza de puntos, giro de 90°, enderezado fino (±10°), modo fondo oscuro.
