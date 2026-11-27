@@ -25,6 +25,12 @@ const BOOKS = [
     ['🤔', 'Who can I read to?'], ['👩🧺👵', 'My mother and grandmother are busy.'],
     ['🤔', 'Who can I read to?'], ['👨🪓👴', 'My father and grandfather are busy.'],
     ['🙋📖', 'Who can I read to? I can read to myself!']] },
+  // libro real (African Storybook, CC BY-NC 3.0: solo uso no comercial)
+  { id: 'whereismycat', level: 'A', title: 'Where is my cat?', cover: '🐱', real: true, imgs: 'books/whereismycat/',
+    credit: 'Clare Verbeek, Thembani Dladla, Zanele Buthelezi · Bronwen Heath, Ingrid Schechter (ill.) · African Storybook · CC BY-NC 3.0', pages: [
+    ['🐱', 'Where is my cat?'], ['🛏️', 'Is it under the bed?'], ['🗄️', 'Is it on top of the cupboard?'],
+    ['🛋️', 'Is it behind the couch?'], ['🗑️', 'Is it next to the bin?'], ['🧺', 'Is it inside the basket?'],
+    ['🏠', 'Is it outside the house?'], ['🐈', 'Here it is!']] },
   { id: 'isee', level: 'A', title: 'I See', cover: '👀', pages: [
     ['🐶', 'I see a dog.'], ['🐱', 'I see a cat.'], ['🐟', 'I see a fish.'], ['🐦', 'I see a bird.'],
     ['🐸', 'I see a frog.'], ['🫵', 'I see you!']] },
