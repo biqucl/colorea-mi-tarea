@@ -1,4 +1,4 @@
-const CACHE = 'colorea-v23';
+const CACHE = 'colorea-v24';
 const FILES = ['./', './index.html', './styles.css', './app.js', './caligrafia.js', './juegos.js', './palabras.js', './gato.js', './balanza.js', './libros.js', './manifest.json', './icon.svg',
   ...['01', '02', '03', '04', '05', '06', '07', '08', '09'].flatMap(n => [`./books/iliketoread/${n}.jpg`, `./books/whereismycat/${n}.jpg`])];
 // al instalar se piden los archivos a la red (sin la caché del navegador) para no guardar versiones viejas

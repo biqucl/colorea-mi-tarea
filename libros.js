@@ -52,7 +52,8 @@ const BOOKS = [
 ];
 const BK_LEVELS = [['preA', 'Pre A'], ['A', 'A']];
 
-const bk = { book: null, i: 0, readTok: 0, swipe: null };
+const bk = { book: null, i: 0, readTok: 0, swipe: null,
+  hidePics: localStorage.getItem('booksHidePics') !== '0' };   // primero leer la palabra, después ver el dibujo
 function bkReadSet() { try { return new Set(JSON.parse(localStorage.getItem('booksRead')) || []); } catch (_) { return new Set(); } }
 
 function bkShelf() {
@@ -63,6 +64,7 @@ function bkShelf() {
   $('#bk-title').textContent = t('books');
   $('#bk-num').textContent = '';
   $('#bk-back').textContent = t('backHome');
+  bkHideBtn();
   const box = $('#bk-shelf'), read = bkReadSet();
   box.innerHTML = '';
   BK_LEVELS.forEach(([lv, name]) => {
@@ -85,6 +87,14 @@ function bkShelf() {
   });
 }
 
+function bkHideBtn() {
+  const b = $('#bk-hide');
+  b.classList.toggle('hidden', !bk.book);
+  b.textContent = bk.hidePics ? '🙈' : '👁️';
+  b.title = t(bk.hidePics ? 'bkPicsHidden' : 'bkPicsShown');
+  b.classList.toggle('active', bk.hidePics);
+}
+
 function bkOpen(book) {
   bk.book = book; bk.i = 0;
   $('#bk-shelf').classList.add('hidden');
@@ -94,6 +104,7 @@ function bkOpen(book) {
   const dots = $('#bk-dots');
   dots.innerHTML = '';
   for (let k = 0; k < book.pages.length + 2; k++) dots.appendChild(document.createElement('i'));
+  bkHideBtn();
   bkRender('in');
 }
 
@@ -115,6 +126,17 @@ function bkRender(anim) {
     ? `<img class="bk-img" src="${b.imgs}${String(bk.i + 1).padStart(2, '0')}.jpg" alt="">`
     : Array(count).fill(`<span>${pic}</span>`).join('');
   $('#bk-pic').dataset.n = count;
+  // en las páginas del cuento el dibujo queda tapado hasta que se toca (para leer sin adivinar por el dibujo)
+  const pageWithText = bk.i !== 0 && bk.i !== last;
+  $('#bk-pic').classList.toggle('covered', bk.hidePics && pageWithText);
+  if (bk.hidePics && pageWithText) {
+    const c = document.createElement('button');
+    c.className = 'bk-curtain';
+    c.innerHTML = `<span class="q">❓</span><span>${t('bkTapToSee')}</span>`;
+    c.onclick = e => { e.stopPropagation(); $('#bk-pic').classList.remove('covered'); $('#bk-pic').classList.add('reveal'); c.remove(); };
+    $('#bk-pic').appendChild(c);
+  }
+  $('#bk-pic').classList.remove('reveal');
   $('#bk-text').innerHTML = bkWords(text);
   $('#bk-text').querySelectorAll('.bk-w').forEach(el => el.onclick = e => {
     e.stopPropagation();
@@ -195,7 +217,7 @@ function bkReadPage() {
 function openBooks() { show('#screen-books'); bkShelf(); }
 function booksOnLang() {
   if ($('#screen-books').classList.contains('hidden')) return;
-  if (bk.book) { $('#bk-back').textContent = t('bkBackShelf'); } else bkShelf();
+  if (bk.book) { $('#bk-back').textContent = t('bkBackShelf'); bkHideBtn(); bkRender(); } else bkShelf();
 }
 
 $('#btn-books').onclick = openBooks;
@@ -203,6 +225,12 @@ $('#bk-back').onclick = () => { if (bk.book) bkShelf(); else { bkStopVoice(); sh
 $('#bk-prev').onclick = () => bkGo(-1);
 $('#bk-next').onclick = () => bkGo(1);
 $('#bk-say').onclick = bkReadPage;
+$('#bk-hide').onclick = () => {
+  bk.hidePics = !bk.hidePics;
+  localStorage.setItem('booksHidePics', bk.hidePics ? '1' : '0');
+  bkHideBtn();
+  bkRender();
+};
 $('#bk-again').onclick = () => { bk.i = 0; bkRender('in-prev'); };
 $('#bk-other').onclick = bkShelf;
 // deslizar el dedo para pasar la página
