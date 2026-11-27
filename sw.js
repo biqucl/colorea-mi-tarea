@@ -1,5 +1,6 @@
-const CACHE = 'colorea-v21';
-const FILES = ['./', './index.html', './styles.css', './app.js', './caligrafia.js', './juegos.js', './palabras.js', './gato.js', './balanza.js', './libros.js', './manifest.json', './icon.svg'];
+const CACHE = 'colorea-v22';
+const FILES = ['./', './index.html', './styles.css', './app.js', './caligrafia.js', './juegos.js', './palabras.js', './gato.js', './balanza.js', './libros.js', './manifest.json', './icon.svg',
+  ...['01', '02', '03', '04', '05', '06', '07', '08', '09'].map(n => `./books/iliketoread/${n}.jpg`)];
 // al instalar se piden los archivos a la red (sin la caché del navegador) para no guardar versiones viejas
 self.addEventListener('install', e => {
   self.skipWaiting();

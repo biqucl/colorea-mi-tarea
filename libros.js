@@ -18,8 +18,8 @@ const BOOKS = [
     ['👀', 'eyes'], ['👃', 'nose'], ['👂', 'ear'], ['👄', 'mouth'], ['✋', 'hand'], ['🦶', 'foot']] },
 
   // A: una frase corta que se repite; cambia una palabra y el dibujo la muestra
-  // libro real (African Storybook, CC BY 3.0): el texto es el original; los dibujos se cambiaron por emojis
-  { id: 'iliketoread', level: 'A', title: 'I like to read!', cover: '📚', real: true,
+  // libro real (African Storybook, CC BY 3.0): texto e ilustraciones originales (imgs: 01 = tapa, 02… = páginas)
+  { id: 'iliketoread', level: 'A', title: 'I like to read!', cover: '📚', real: true, imgs: 'books/iliketoread/',
     credit: 'Letta Machoga · Wiehan de Jager (ill.) · African Storybook · CC BY 3.0', pages: [
     ['📖', 'I like to read.'], ['🤔', 'Who can I read to?'], ['😴', 'My sister is asleep.'],
     ['🤔', 'Who can I read to?'], ['👩🧺👵', 'My mother and grandmother are busy.'],
@@ -69,7 +69,8 @@ function bkShelf() {
     BOOKS.filter(b => b.level === lv).forEach(b => {
       const c = document.createElement('button');
       c.className = 'bk-cover-card';
-      c.innerHTML = (b.real ? `<span class="bk-real">${t('bkReal')}</span>` : '') + `<span class="icon">${b.cover}</span><b>${b.title}</b>` +
+      const icon = b.imgs ? `<img class="bk-thumb" src="${b.imgs}01.jpg" alt="">` : b.cover;
+      c.innerHTML = (b.real ? `<span class="bk-real">${t('bkReal')}</span>` : '') + `<span class="icon">${icon}</span><b>${b.title}</b>` +
         `<span class="bk-meta">${read.has(b.id) ? '✅ ' + t('bkDone') : t('bkPages', b.pages.length)}</span>`;
       c.onclick = () => bkOpen(b);
       row.appendChild(c);
@@ -104,7 +105,9 @@ function bkRender(anim) {
   if (bk.i === 0) { pic = b.cover; text = b.title; }
   else if (bk.i === last) { pic = '🎉'; text = 'The End'; }
   else [pic, text, count = 1] = b.pages[bk.i - 1];
-  $('#bk-pic').innerHTML = Array(count).fill(`<span>${pic}</span>`).join('');
+  $('#bk-pic').innerHTML = b.imgs && bk.i !== last
+    ? `<img class="bk-img" src="${b.imgs}${String(bk.i + 1).padStart(2, '0')}.jpg" alt="">`
+    : Array(count).fill(`<span>${pic}</span>`).join('');
   $('#bk-pic').dataset.n = count;
   $('#bk-text').innerHTML = bkWords(text);
   $('#bk-text').querySelectorAll('.bk-w').forEach(el => el.onclick = e => {
