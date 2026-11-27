@@ -1,4 +1,4 @@
-const CACHE = 'colorea-v20';
+const CACHE = 'colorea-v21';
 const FILES = ['./', './index.html', './styles.css', './app.js', './caligrafia.js', './juegos.js', './palabras.js', './gato.js', './balanza.js', './libros.js', './manifest.json', './icon.svg'];
 // al instalar se piden los archivos a la red (sin la caché del navegador) para no guardar versiones viejas
 self.addEventListener('install', e => {

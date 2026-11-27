@@ -18,6 +18,13 @@ const BOOKS = [
     ['👀', 'eyes'], ['👃', 'nose'], ['👂', 'ear'], ['👄', 'mouth'], ['✋', 'hand'], ['🦶', 'foot']] },
 
   // A: una frase corta que se repite; cambia una palabra y el dibujo la muestra
+  // libro real (African Storybook, CC BY 3.0): el texto es el original; los dibujos se cambiaron por emojis
+  { id: 'iliketoread', level: 'A', title: 'I like to read!', cover: '📚', real: true,
+    credit: 'Letta Machoga · Wiehan de Jager (ill.) · African Storybook · CC BY 3.0', pages: [
+    ['📖', 'I like to read.'], ['🤔', 'Who can I read to?'], ['😴', 'My sister is asleep.'],
+    ['🤔', 'Who can I read to?'], ['👩🧺👵', 'My mother and grandmother are busy.'],
+    ['🤔', 'Who can I read to?'], ['👨🪓👴', 'My father and grandfather are busy.'],
+    ['🙋📖', 'Who can I read to? I can read to myself!']] },
   { id: 'isee', level: 'A', title: 'I See', cover: '👀', pages: [
     ['🐶', 'I see a dog.'], ['🐱', 'I see a cat.'], ['🐟', 'I see a fish.'], ['🐦', 'I see a bird.'],
     ['🐸', 'I see a frog.'], ['🫵', 'I see you!']] },
@@ -62,7 +69,7 @@ function bkShelf() {
     BOOKS.filter(b => b.level === lv).forEach(b => {
       const c = document.createElement('button');
       c.className = 'bk-cover-card';
-      c.innerHTML = `<span class="icon">${b.cover}</span><b>${b.title}</b>` +
+      c.innerHTML = (b.real ? `<span class="bk-real">${t('bkReal')}</span>` : '') + `<span class="icon">${b.cover}</span><b>${b.title}</b>` +
         `<span class="bk-meta">${read.has(b.id) ? '✅ ' + t('bkDone') : t('bkPages', b.pages.length)}</span>`;
       c.onclick = () => bkOpen(b);
       row.appendChild(c);
@@ -106,6 +113,7 @@ function bkRender(anim) {
     el.classList.add('hl');
     bkSpeak(el.dataset.w, () => el.classList.remove('hl'));
   });
+  $('#bk-credit').textContent = bk.i === 0 && b.credit ? b.credit : '';
   $('#bk-end-actions').classList.toggle('hidden', bk.i !== last);
   $('#bk-prev').disabled = bk.i === 0;
   $('#bk-next').disabled = bk.i === last;
