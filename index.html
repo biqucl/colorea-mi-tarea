@@ -9,7 +9,7 @@
 <title>Colorea Mi Tarea</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<link rel="stylesheet" href="styles.css?v=19">
+<link rel="stylesheet" href="styles.css?v=20">
 </head>
 <body>
 
@@ -33,6 +33,7 @@
     <button class="bigbtn" id="btn-blank">📄 <span data-i18n="blankPage">Página en blanco</span></button>
     <button class="bigbtn" id="btn-callig">✍️ <span data-i18n="calligraphy">Caligrafía</span></button>
     <button class="bigbtn" id="btn-games">🎲 <span data-i18n="games">Juegos</span></button>
+    <button class="bigbtn" id="btn-books">📖 <span data-i18n="books">Libros</span></button>
     <button class="bigbtn" id="btn-demo">✏️ <span data-i18n="tryDemo">Probar con ejemplo</span></button>
   </div>
   <div class="samples">
@@ -176,6 +177,34 @@
     <button class="btn" id="cal-clear">🧽 <span data-i18n="calClear">Borrar</span></button>
     <button class="btn" id="cal-next" data-i18n-title="calNext">➡️</button>
   </footer>
+</section>
+
+<!-- Libros por nivel -->
+<section id="screen-books" class="screen hidden">
+  <header class="bar">
+    <button class="btn" id="bk-back" data-i18n="backHome">← Inicio</button>
+    <span class="title" id="bk-title" data-i18n="books">Libros</span>
+    <span class="bk-num" id="bk-num"></span>
+  </header>
+  <div id="bk-shelf" class="bk-shelf"></div>
+  <div id="bk-read" class="bk-read hidden">
+    <div class="bk-stage" id="bk-stage">
+      <div class="bk-page" id="bk-page">
+        <div class="bk-pic" id="bk-pic"></div>
+        <div class="bk-text" id="bk-text"></div>
+        <div class="bk-end-actions hidden" id="bk-end-actions">
+          <button class="bigbtn primary" id="bk-again" data-i18n="bkAgain">Leer otra vez</button>
+          <button class="bigbtn" id="bk-other" data-i18n="bkOther">Otro libro</button>
+        </div>
+      </div>
+    </div>
+    <div class="bk-dots" id="bk-dots"></div>
+    <footer class="bk-actions">
+      <button class="wd-btn bk-nav" id="bk-prev" data-i18n-title="bkPrev">⬅️</button>
+      <button class="wd-btn bk-say" id="bk-say">🔊 <span data-i18n="bkReadToMe">Léemelo</span></button>
+      <button class="wd-btn bk-nav" id="bk-next" data-i18n-title="bkNext">➡️</button>
+    </footer>
+  </div>
 </section>
 
 <!-- Menú de juegos -->
@@ -360,11 +389,12 @@
 </div>
 
 <div id="toast" class="toast hidden"></div>
-<script src="app.js?v=19"></script>
-<script src="caligrafia.js?v=19"></script>
-<script src="juegos.js?v=19"></script>
-<script src="palabras.js?v=19"></script>
-<script src="gato.js?v=19"></script>
-<script src="balanza.js?v=19"></script>
+<script src="app.js?v=20"></script>
+<script src="caligrafia.js?v=20"></script>
+<script src="juegos.js?v=20"></script>
+<script src="palabras.js?v=20"></script>
+<script src="gato.js?v=20"></script>
+<script src="balanza.js?v=20"></script>
+<script src="libros.js?v=20"></script>
 </body>
 </html>

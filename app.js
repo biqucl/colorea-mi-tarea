@@ -129,6 +129,18 @@ const I18N = {
     balTooMuch: 'Pesa demasiado, saca un número',
     balEven: '¡Quedó pareja!',
     balYes: (n, parts) => `¡Quedó pareja! ${parts.join(' más ')} es igual a ${n}`,
+    books: 'Libros',
+    bkLevelDesc_preA: 'Una palabra por página',
+    bkLevelDesc_A: 'Una frase que se repite',
+    bkPages: n => n + ' páginas',
+    bkDone: 'Leído',
+    bkBackShelf: '← Libros',
+    bkReadToMe: 'Léemelo',
+    bkPrev: 'Página anterior',
+    bkNext: 'Página siguiente',
+    bkAgain: 'Leer otra vez',
+    bkOther: 'Otro libro',
+    bkFinished: '¡Terminaste el libro!',
     sightWords: 'Sight words',
     sightWordsDesc: 'Tarjetas para leer',
     wordsUnit: n => 'Unidad ' + n,
@@ -270,6 +282,18 @@ const I18N = {
     balTooMuch: 'Too heavy, take a number off',
     balEven: 'Balanced!',
     balYes: (n, parts) => `Balanced! ${parts.join(' plus ')} equals ${n}`,
+    books: 'Books',
+    bkLevelDesc_preA: 'One word per page',
+    bkLevelDesc_A: 'A sentence that repeats',
+    bkPages: n => n + ' pages',
+    bkDone: 'Read',
+    bkBackShelf: '← Books',
+    bkReadToMe: 'Read to me',
+    bkPrev: 'Previous page',
+    bkNext: 'Next page',
+    bkAgain: 'Read again',
+    bkOther: 'Another book',
+    bkFinished: 'You finished the book!',
     sightWords: 'Sight words',
     sightWordsDesc: 'Reading flashcards',
     wordsUnit: n => 'Unit ' + n,
@@ -323,6 +347,7 @@ async function setLang(next) {
   calOnLang();
   gamesOnLang();
   wordsOnLang();
+  if (typeof booksOnLang === 'function') booksOnLang();
 }
 
 // ---------- estado ----------
